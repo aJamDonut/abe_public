@@ -2,6 +2,19 @@ function checkIsNodeJs() {
 	return typeof process === "object";
 }
 
+function isLive() {
+	if(game.urlVar('localStorage')) {
+		return true;
+	}
+	if(isElectron()) {
+		return true;
+	}
+	if(isNw()) {
+		return true;
+	}
+	return false;
+}
+
 function isElectron() {
 	// Renderer process
 	if (typeof window !== "undefined" && typeof window.process === "object" && window.process.type === "renderer") {
@@ -52,4 +65,4 @@ function isNw() {
 	return false;
 }
 
-export {isNw, isElectron};
+export {isNw, isElectron, isLive};

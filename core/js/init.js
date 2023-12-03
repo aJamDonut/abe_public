@@ -63073,7 +63073,7 @@ function isNw() {
 let fs = null;
 
 
-if (isNw()) {
+if (isNw() || isElectron()) {
 	fs = await require("fs");
 }
 class AbeFS {

@@ -5,8 +5,8 @@ import game from "./game.path.mjs";
 import {bootStrap} from "./bootStrap.mjs";
 import {bootStrap as bootStrapLive} from "./bootStrap.live.mjs";
 
-import {isNw} from "../shared/Environment.mjs";
-const strapper = isNw() ? bootStrapLive : bootStrap;
+import {isLive} from "../shared/Environment.mjs";
+const strapper = isLive() ? bootStrapLive : bootStrap;
 
 self.game = game;
 

@@ -287,6 +287,41 @@ function checkIsNodeJs() {
 	return typeof process === "object";
 }
 
+function isLive() {
+	if(game.urlVar('localStorage')) {
+		return true;
+	}
+	if(isElectron()) {
+		return true;
+	}
+	if(isNw()) {
+		return true;
+	}
+	return false;
+}
+
+function isElectron() {
+	// Renderer process
+	if (typeof window !== "undefined" && typeof window.process === "object" && window.process.type === "renderer") {
+		return true;
+	}
+
+	// Main process
+	if (typeof process !== "undefined" && typeof process.versions === "object" && !!process.versions.electron) {
+		return true;
+	}
+
+	// Detect the user agent when the `nodeIntegration` option is set to true
+	if (
+		typeof navigator === "object" &&
+		typeof navigator.userAgent === "string" &&
+		navigator.userAgent.indexOf("Electron") >= 0
+	) {
+		return true;
+	}
+	return false;
+}
+
 /**
  * Checks if running in NW.js
  * Works for Web Workers and Browser
@@ -323,7 +358,7 @@ function isNw() {
 let fs = null;
 
 
-if (isNw()) {
+if (isNw() || isElectron()) {
 	fs = await require("fs");
 }
 class AbeFS {
@@ -819,7 +854,7 @@ ABE.errorLog = (msg, extra) => {
 	ABE.log("err", msg, extra);
 };
 
-if (!isNw()) ;
+if (!isLive()) ;
 
 class ServerHelper {
 	constructor(emit) {
@@ -6988,7 +7023,7 @@ const servers$1 = {
 	disk: new ServerWorld(Emitter)
 };
 
-if (isNw()) {
+if (isLive()) {
 	servers$1.path = new ServerPath(Emitter);
 }
 
@@ -6998,8 +7033,8 @@ class GameServer {
 	constructor() {
 		this.server = "Not set";
 		this.ts = 0;
-		console.info("Is NW?", isNw());
-		if (isNw()) {
+		console.info("Is Live?", isLive());
+		if (isLive()) {
 			this.fs = new AbeFS("gamedata", false); //Per save file
 			this.globalfs = new AbeFS("gamedata", false); //Consistent everywhere
 		} else {

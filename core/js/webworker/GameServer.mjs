@@ -6,7 +6,7 @@ import ServerWorld from "./ServerWorld.mjs";
 import ServerPhysics from "./ServerPhysics.mjs";
 import ServerPath from "./ServerPath.mjs";
 
-import {isNw} from "../shared/Environment.mjs";
+import {isLive} from "../shared/Environment.mjs";
 
 if (!globalThis.self && !global.self) {
 	try {
@@ -26,7 +26,7 @@ const servers = {
 	disk: new ServerWorld(Emitter)
 };
 
-if (isNw()) {
+if (isLive()) {
 	servers.path = new ServerPath(Emitter);
 }
 
@@ -36,8 +36,8 @@ class GameServer {
 	constructor() {
 		this.server = "Not set";
 		this.ts = 0;
-		console.info("Is NW?", isNw());
-		if (isNw()) {
+		console.info("Is Live?", isLive());
+		if (isLive()) {
 			this.fs = new AbeFS("gamedata", false); //Per save file
 			this.globalfs = new AbeFS("gamedata", false); //Consistent everywhere
 		} else {

@@ -1,4 +1,4 @@
-import {isNw} from "../shared/Environment.mjs";
+import {isLive, isNw} from "../shared/Environment.mjs";
 
 const ABE = {};
 
@@ -76,7 +76,7 @@ ABE.errorLog = (msg, extra) => {
 	ABE.log("err", msg, extra);
 };
 
-if (!isNw()) {
+if (!isLive()) {
 	//console.log = ABE.infoLog; //Overwrite console log
 	//console.error = ABE.errorLog; //Overwrite console log
 	//console.warn = ABE.monitorLog; //Overwrite console log
