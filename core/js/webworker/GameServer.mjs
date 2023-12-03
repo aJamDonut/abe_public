@@ -6,7 +6,7 @@ import ServerWorld from "./ServerWorld.mjs";
 import ServerPhysics from "./ServerPhysics.mjs";
 import ServerPath from "./ServerPath.mjs";
 
-import {isLive} from "../shared/Environment.mjs";
+import {isLive, isElectron, isNw} from "../shared/Environment.mjs";
 
 if (!globalThis.self && !global.self) {
 	try {
@@ -17,6 +17,7 @@ if (!globalThis.self && !global.self) {
 //import {Emitter as NodeEmitter} from "./NodeEmitter.mjs";
 
 import {Emitter as WebEmitter} from "./Emitter.mjs";
+import AbeFSLocalStorage from "../classes/AbeFSLocalStorage.mjs";
 
 let Emitter = WebEmitter;
 
@@ -36,10 +37,13 @@ class GameServer {
 	constructor() {
 		this.server = "Not set";
 		this.ts = 0;
-		console.info("Is Live?", isLive());
-		if (isLive()) {
+		
+		if (isNw()) {
 			this.fs = new AbeFS("gamedata", false); //Per save file
 			this.globalfs = new AbeFS("gamedata", false); //Consistent everywhere
+		} else if (isLive() || isElectron()) {
+			this.fs = new AbeFSLocalStorage("gamedata", false); //Per save file
+			this.globalfs = new AbeFSLocalStorage("gamedata", false); //Consistent everywhere
 		} else {
 			this.fs = new AbeFSAjax("gamedata", false); //Per save file
 			this.globalfs = new AbeFSAjax("gamedata", false); //Consistent everywhere

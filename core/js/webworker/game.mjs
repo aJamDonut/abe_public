@@ -7026,6 +7026,373 @@ const Emitter$1 = function (data) {
 	}
 };
 
+/*
+
+Special consideration:
+
+Save files can be very big > 20mb
+
+*/
+
+class AbeFSLocalStorage {
+	constructor(root, readOnly, infoLogger, errorLogger) {
+		this.infoLogger = infoLogger || console.log;
+		this.errorLogger = errorLogger || console.error;
+		this.folder = this.root = root;
+		this.readOnly = readOnly;
+		this.httpRoot = "/ABE/";
+		this.ready = true;
+		this.folderCache = {}; //Remember about already created folders
+		this.keyCache = {}; //Remember about keys
+		this.initIndexedDB();
+		if (!this.ready) {
+			this.errorLogger("[ABE] Broken fs dependency");
+			return;
+		}
+
+		this.keyFile = "keys.json";
+
+		this.createRoot(root);
+		this.keyTimer = 0;
+		this.db = {};
+	}
+
+	initIndexedDB() {
+		const request = indexedDB.open("deaddesert_bigfiles", 2);
+
+		request.onerror = (event) => {
+			console.error("IndexedDB Error", event);
+			this.errorLogger(event);
+		};
+
+		request.onupgradeneeded = (event) => {
+			const db = event.target.result;
+			db.createObjectStore("savefiles", {keyPath: "name"});
+		};
+		request.onsuccess = (event) => {
+			const db = event.target.result;
+			this.db = db;
+			return;
+		};
+	}
+
+	addKey(name) {
+		if (this.keyCache[name]) {
+			return; //We already know about this one
+		}
+		this.keyCache[name] = true;
+		if (this.keyTimer) {
+			clearTimeout(this.keyTimer);
+		}
+		//Reduce writing to file to avoid overwriting
+		this.keyTimer = setTimeout(() => {
+			this.writeFileSync(this.keyFile, this.keyCache);
+		}, 1000);
+	}
+
+	#getFilename(filename) {
+		filename = this.#stripFileExtension(filename) + ".json";
+		//Package is protected name
+		let protectedFile = "package.json";
+		if (filename.substr(-protectedFile.length) == protectedFile) {
+			throw "Cannot write file";
+		}
+		return filename;
+	}
+
+	#stripFileExtension(filename) {
+		const lastDotIndex = filename.lastIndexOf(".");
+		if (lastDotIndex === -1) {
+			return filename; // No file extension found
+		} else {
+			return filename.slice(0, lastDotIndex);
+		}
+	}
+
+	#makeKey(name) {
+		return this.#stripFileExtension(name);
+	}
+
+	exists(file, _ignoreCache) {
+		file = "_file_" + this.#makeKey(file);
+		return window.localStorage.getItem(file);
+	}
+
+	/**
+	 * Wraps IndexedDB transactions so they can be awaited
+	 * @param {*} transaction
+	 * @returns
+	 */
+	async awaitTransaction(transaction) {
+		return new Promise((resolve, reject) => {
+			transaction.onerror = (error) => {
+				reject(error);
+			};
+			transaction.onsuccess = (event) => {
+				resolve(event.target.result);
+			};
+		});
+	}
+
+	async fallbackIndexedDbWrite(name, data) {
+		const transaction = this.db.transaction(["savefiles"]);
+		const objectStore = transaction.objectStore("savefiles");
+		return this.awaitTransaction(objectStore.add({name, data}));
+	}
+
+	async fallbackIndexedDbRead(name) {
+		console.log("Fallback for", name);
+		const transaction = this.db.transaction(["savefiles"]);
+		const objectStore = transaction.objectStore("savefiles");
+		try {
+			const data = await this.awaitTransaction(objectStore.get(name));
+			console.log("Fallback for data", data);
+			if (!data || !data.data) return false;
+			return data.data;
+		} catch (e) {
+			console.error("Fallback error", e);
+			return false;
+		}
+	}
+
+	syncLocalWrite(url, data) {
+		const key = "_file_" + this.#makeKey(url);
+		if (!data) {
+			return false;
+		}
+		//Is setting
+		try {
+			if (typeof data !== "string") {
+				data = JSON.stringify(data);
+			}
+			window.localStorage.setItem(key, data);
+			return true;
+		} catch (e) {
+			this.fallbackIndexedDbWrite(key, data);
+		}
+	}
+
+	async syncLocalFetch(url) {
+		const key = "_file_" + this.#makeKey(url);
+
+		//Is getting
+		let data = window.localStorage.getItem(key);
+
+		if (data) {
+			try {
+				return JSON.parse(data);
+			} catch (e) {
+				return data;
+			}
+		}
+
+		if (!data || data.length === 0) {
+			data = await this.fallbackIndexedDbRead(key);
+
+			if (data) {
+				try {
+					return JSON.parse(data);
+				} catch (e) {
+					return data;
+				}
+			}
+
+			//No data in local storage or indexeddb make request
+			try {
+				console.log("Not in index do req", this.httpRoot + url);
+				return this.syncReq(this.httpRoot + url + "?ts=" + Date.now());
+			} catch (e) {
+				console.error("[ABE-ERROR] canny find", this.httpRoot + url);
+				return false; //No data even from request
+			}
+		}
+	}
+
+	syncReq(url) {
+		let request = new XMLHttpRequest();
+		request.open("GET", url, false); // `false` makes the request synchronous
+		request.send(null);
+		let result = {};
+		if (request.status === 200) {
+			if (request.responseText.substring(0, 1) == "{") {
+				try {
+					result = JSON.parse(request.responseText);
+				} catch (e) {
+					this.errorLogger("[ABE-ERROR] Failed to read AJAX result", url, request.responseText);
+					result = "";
+				}
+			} else {
+				result = request.responseText;
+			}
+		} else {
+			return "";
+		}
+		return result;
+	}
+
+	localFetch(url) {
+		console.log("Local fetch", url);
+		return new Promise((resolve, _reject) => {
+			resolve(this.syncLocalFetch(url));
+		});
+	}
+
+	localWrite(url, data) {
+		console.log("Local write", url);
+		return new Promise((resolve, _reject) => {
+			resolve(this.syncLocalWrite(url, data));
+		});
+	}
+
+	async writeFileSync(filename, data, callback) {
+		if (!callback) {
+			callback = this.defaultCallback;
+		}
+		if (this.readOnly) {
+			return callback({});
+		}
+		filename = this.#getFilename(filename);
+		try {
+			await this.localWrite(this.folder + "/" + filename, JSON.stringify(data)).then(callback);
+
+			this.addKey(filename);
+		} catch (e) {
+			this.errorLogger(data);
+		}
+	}
+
+	writeFile(filename, data, callback) {
+		if (!callback) {
+			callback = this.defaultCallback;
+		}
+		if (this.readOnly) {
+			return callback({});
+		}
+		console.log("write", filename);
+		filename = this.#getFilename(filename);
+		try {
+			this.localWrite(this.folder + "/" + filename, JSON.stringify(data)).then(callback);
+			this.addKey(filename);
+		} catch (e) {
+			console.error("Error", e);
+			this.errorLogger(data);
+			JSON.stringify(data);
+		}
+	}
+
+	writeFileRaw(filename, data, callback) {
+		if (!callback) {
+			callback = this.defaultCallback;
+		}
+		if (this.readOnly) {
+			return callback({});
+		}
+		filename = this.#getFilename(filename);
+		try {
+			this.localWrite(filename, JSON.stringify(data)).then(callback);
+			this.addKey(filename);
+		} catch (e) {
+			this.errorLogger(data);
+			JSON.stringify(data);
+		}
+	}
+
+	setFolder(folder, create) {
+		if (this.folder == this.root + "/" + folder) {
+			return; //Already this folder
+		}
+		if (create) {
+			this.createFolder(folder);
+		}
+
+		this.folder = this.root + "/" + folder;
+
+		if (this.exists(this.folder + "/" + this.keyFile, true)) {
+			this.keyCache = this.readFileSync(this.keyFile);
+		} else {
+			this.keyCache = {}; //No keeeeeyz
+		}
+	}
+
+	readFileRaw(filename, callback) {
+		if (!callback) {
+			callback = this.defaultCallback();
+		}
+		filename = this.#getFilename(filename);
+		this.localFetch(filename)
+			.then(function (res) {
+				return res.json();
+			})
+			.then(callback);
+	}
+
+	readFile(filename, callback) {
+		if (!callback) {
+			callback = this.defaultCallback();
+		}
+		filename = this.#getFilename(filename);
+		this.localFetch(this.folder + "/" + filename)
+			.then(function (res) {
+				return res.json();
+			})
+			.then(callback);
+	}
+
+	createRoot(_root) {
+		return true; //Not required
+	}
+
+	createFolder(_folder) {
+		return true;
+	}
+
+	keyExists(key) {
+		return false;
+	}
+/*
+	keyExists(key) {
+		const res = await this.syncLocalFetch(this.folder + "/" + key);
+		console.log("res", res);
+		if (res) {
+			return res;
+		}
+		console.log("synco")
+		return await this.syncLocalFetch(this.folder + "/" + key + ".json");
+	}
+*/
+	folderExists(_folder) {
+		return true;
+	}
+
+	defaultCallback() {}
+
+	save(key, value, callback) {
+		this.writeFile(key, value, callback);
+	}
+
+	saveSync(key, value, callback) {
+		this.writeFileSync(key, value, callback);
+	}
+
+	async readFileSync(filename) {
+		filename = this.#getFilename(filename);
+		return this.syncLocalFetch(this.folder + "/" + filename);
+	}
+
+	async loadSync(key) {
+		return await this.readFileSync(key);
+	}
+
+	load(key, callback) {
+		this.readFile(key, callback);
+	}
+
+	//Used for mods, clearly not used in browser
+	getFolder(_folder) {
+		return [];
+	}
+}
+
 if (!globalThis.self && !global.self) {
 	try {
 		global.self = global;
@@ -7050,10 +7417,13 @@ class GameServer {
 	constructor() {
 		this.server = "Not set";
 		this.ts = 0;
-		console.info("Is Live?", isLive());
-		if (isLive()) {
+		
+		if (isNw()) {
 			this.fs = new AbeFS("gamedata", false); //Per save file
 			this.globalfs = new AbeFS("gamedata", false); //Consistent everywhere
+		} else if (isLive() || isElectron()) {
+			this.fs = new AbeFSLocalStorage("gamedata", false); //Per save file
+			this.globalfs = new AbeFSLocalStorage("gamedata", false); //Consistent everywhere
 		} else {
 			this.fs = new AbeFSAjax("gamedata", false); //Per save file
 			this.globalfs = new AbeFSAjax("gamedata", false); //Consistent everywhere
