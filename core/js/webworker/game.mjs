@@ -288,8 +288,15 @@ function checkIsNodeJs() {
 }
 
 function isLive() {
-	if(game.urlVar('localStorage')) {
+	//Works for webworkers
+	if(localStorage.getItem('_file_gamedata/global/keys')) { //This key would be created by now?
 		return true;
+	}
+	//Works for fronted
+	if(typeof game !== "undefined" && typeof game.urlVar === "function") {
+		if(game.urlVar('localStorage')) {
+			return true;
+		}
 	}
 	if(isElectron()) {
 		return true;

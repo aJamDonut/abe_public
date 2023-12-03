@@ -3448,53 +3448,34 @@
     "parent": 'ss_items_ammo',
     "name": 'Shotgun Ammo'
   };
-  _BLUEPRINTS.INV_ITEMS.ss_item_glass = {
-    "sprite": 'sprite_glass',
+  _BLUEPRINTS.INV_ITEMS.ss_item_wood = {
+    "sprite": 'sprite_log_item',
     "meta": {
-      "description": 'A see through material, make a better window than a door',
+      "description": 'Sturdy wood, for burning or construction',
       "slots": 'resource',
-      "blockWidth": 2,
+      "blockWidth": 3,
       "blockHeight": 2,
-      "value": 100,
-      "weight": 0
+      "value": 10,
+      "weight": 1
     },
     "events": {
       "onCreate": function () {
-        this.maxStack = 3;
         this.isQuantity = true;
+        this.maxStack = 6;
       }
     },
     "parent": 'ss_items_resources',
-    "name": 'Glass'
+    "name": 'Wood'
   };
-  _BLUEPRINTS.INV_ITEMS.ss_item_hemp = {
-    "sprite": 'sprite_hemp',
+  _BLUEPRINTS.INV_ITEMS.ss_item_fiber = {
+    "sprite": 'sprite_pangoleaves',
     "meta": {
-      "description": 'Strongest crafting material for defense and strength',
-      "slots": 'resource',
-      "blockWidth": 22,
-      "blockHeight": 22,
-      "value": 600,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.maxStack = 5;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Hemps'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_gunpowder = {
-    "sprite": 'sprite_gunpowder',
-    "meta": {
-      "description": 'Gunpowder go boom.',
+      "description": 'A strong rope-like fiber',
       "slots": 'resource',
       "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 260,
-      "weight": 0
+      "blockHeight": 1,
+      "value": 5,
+      "weight": 1
     },
     "events": {
       "onCreate": function () {
@@ -3503,93 +3484,95 @@
       }
     },
     "parent": 'ss_items_resources',
-    "name": 'Gunpowder'
+    "name": 'Pango String'
   };
-  _BLUEPRINTS.INV_ITEMS.ss_item_redbar = {
-    "sprite": 'sprite_redbar',
+  _BLUEPRINTS.INV_ITEMS.ss_item_stone = {
+    "sprite": 'item_stonepile',
     "meta": {
-      "description": 'A red metal ingot for weapon crafting',
+      "description": 'Rock hard desert rock',
       "slots": 'resource',
       "blockWidth": 2,
       "blockHeight": 2,
-      "value": 600,
-      "weight": 0
+      "value": 15,
+      "weight": 1
     },
     "events": {
       "onCreate": function () {
-        this.maxStack = 3;
+        this.maxStack = 10;
         this.isQuantity = true;
       }
     },
     "parent": 'ss_items_resources',
-    "name": 'Red Bar'
+    "name": 'Stone Pile'
   };
-  _BLUEPRINTS.INV_ITEMS.ss_item_research_node = {
-    "sprite": 'sprite_item_researchbook',
+  _BLUEPRINTS.INV_ITEMS.ss_item_rawmeat = {
+    "sprite": 'sprite_meat',
     "meta": {
-      "description": 'A cache of nanites used for powering AI based research',
+      "description": 'Raw meat, best cook it.',
       "slots": 'resource',
       "blockWidth": 2,
       "blockHeight": 2,
-      "value": 750,
-      "weight": 0
+      "value": 50,
+      "weight": 1
     },
     "events": {
       "onCreate": function () {
+        this.resourceType = 'Food';
         this.maxStack = 5;
         this.isQuantity = true;
       }
     },
     "parent": 'ss_items_resources',
-    "name": 'Research Node'
+    "name": 'Raw Meat'
   };
-  _BLUEPRINTS.INV_ITEMS.ss_item_sinstone = {
-    "sprite": 'sprite_sinstone',
+  _BLUEPRINTS.INV_ITEMS.ss_item_skin = {
+    "sprite": 'sprite_skin',
     "meta": {
-      "description": 'A rare stone used in earth crafting',
+      "description": 'It\'s the skin of a living creature... creepy.',
       "slots": 'resource',
       "blockWidth": 2,
       "blockHeight": 2,
-      "value": 450,
-      "weight": 0
+      "value": 160,
+      "weight": 1
     },
     "events": {
       "onCreate": function () {
-        this.maxStack = 3;
+        this.maxStack = 25;
         this.isQuantity = true;
       }
     },
     "parent": 'ss_items_resources',
-    "name": 'Sin Stone'
+    "name": 'Skin'
   };
-  _BLUEPRINTS.INV_ITEMS.ss_item_building_material = {
-    "sprite": 'sprite_buildingmaterial',
+  _BLUEPRINTS.INV_ITEMS.ss_item_whitemeat = {
+    "sprite": 'sprite_meat_white',
     "meta": {
-      "description": 'A box of supplies for building structures',
+      "description": 'White meat... but... why...te?',
       "slots": 'resource',
       "blockWidth": 2,
       "blockHeight": 2,
-      "value": 100,
-      "weight": 0
+      "value": 50,
+      "weight": 2
     },
     "events": {
       "onCreate": function () {
+        this.resourceType = 'Food';
         this.maxStack = 5;
         this.isQuantity = true;
       }
     },
     "parent": 'ss_items_resources',
-    "name": 'Building Supplies'
+    "name": 'White Meat'
   };
-  _BLUEPRINTS.INV_ITEMS.ss_item_roboeye = {
-    "sprite": 'sprite_roboeye',
+  _BLUEPRINTS.INV_ITEMS.ss_item_sand = {
+    "sprite": 'sprite_sand',
     "meta": {
-      "description": 'A rare stone used in earth crafting',
+      "description": 'Used in crafting glass',
       "slots": 'resource',
       "blockWidth": 2,
       "blockHeight": 2,
-      "value": 230,
-      "weight": 0
+      "value": 20,
+      "weight": 2
     },
     "events": {
       "onCreate": function () {
@@ -3598,102 +3581,7 @@
       }
     },
     "parent": 'ss_items_resources',
-    "name": 'Robo Eye'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_sheetmetal = {
-    "sprite": 'item_rusty_metal',
-    "meta": {
-      "description": 'Used to join crafting componenets together',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 350,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.maxStack = 5;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Sheet Metal'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_mechscrap = {
-    "sprite": 'sprite_mechscrap',
-    "meta": {
-      "description": 'Mechanical scrap for moving components',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 130,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.maxStack = 3;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Mechanical Scrap'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_gazoline = {
-    "sprite": 'item_gazoline',
-    "meta": {
-      "description": 'Used to join crafting componenets together',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 290,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.maxStack = 1;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Gazoline'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_darkiron = {
-    "sprite": 'sprite_darkiron',
-    "meta": {
-      "description": 'Strongest crafting material for defense and strength',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 650,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.maxStack = 3;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Dark Iron'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_nano_chip = {
-    "sprite": 'item_computer_chip',
-    "meta": {
-      "description": 'Used to join crafting componenets together',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 500,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.maxStack = 3;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Nano Chip'
+    "name": 'Sand'
   };
   _BLUEPRINTS.INV_ITEMS.ss_item_bedroll = {
     "sprite": 'sprite_bedroll',
@@ -3714,110 +3602,15 @@
     "parent": 'ss_items_resources',
     "name": 'Bedroll'
   };
-  _BLUEPRINTS.INV_ITEMS.ss_item_sand = {
-    "sprite": 'sprite_sand',
+  _BLUEPRINTS.INV_ITEMS.ss_item_adhesive = {
+    "sprite": 'item_adhesive',
     "meta": {
-      "description": 'Used in crafting glass',
+      "description": 'Used to join crafting componenets together',
       "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 20,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.maxStack = 3;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Sand'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_metalingot = {
-    "sprite": 'sprite_ingot_metal',
-    "meta": {
-      "description": 'Strongest crafting material for defense and strength',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 650,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.maxStack = 3;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Metal Ingot'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_redgem = {
-    "sprite": 'sprite_redgem',
-    "meta": {
-      "description": 'A colorful rare gem',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 550,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.maxStack = 3;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Red Gem'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_metalore = {
-    "sprite": 'sprite_ore_metal',
-    "meta": {
-      "description": 'Strongest crafting material for defense and strength',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
+      "blockWidth": 22,
+      "blockHeight": 22,
       "value": 50,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.maxStack = 5;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Metal Ore'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_wood = {
-    "sprite": 'sprite_log_item',
-    "meta": {
-      "description": 'Sturdy wood, for burning or construction',
-      "slots": 'resource',
-      "blockWidth": 3,
-      "blockHeight": 2,
-      "value": 10,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.isQuantity = true;
-        this.maxStack = 6;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Woods'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_fiber = {
-    "sprite": 'sprite_pangoleaves',
-    "meta": {
-      "description": 'A strong rope-like fiber',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 1,
-      "value": 5,
-      "weight": 0
+      "weight": 5
     },
     "events": {
       "onCreate": function () {
@@ -3826,66 +3619,7 @@
       }
     },
     "parent": 'ss_items_resources',
-    "name": 'Pango String'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_stone = {
-    "sprite": 'item_stonepile',
-    "meta": {
-      "description": 'Rock hard desert rock',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 15,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.maxStack = 10;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Stone Pile'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_rawmeat = {
-    "sprite": 'sprite_meat',
-    "meta": {
-      "description": 'Raw meat, best cook it.',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 50,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.resourceType = 'Food';
-        this.maxStack = 5;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'Raw Meat'
-  };
-  _BLUEPRINTS.INV_ITEMS.ss_item_whitemeat = {
-    "sprite": 'sprite_meat_white',
-    "meta": {
-      "description": 'White meat... but... why...te?',
-      "slots": 'resource',
-      "blockWidth": 2,
-      "blockHeight": 2,
-      "value": 50,
-      "weight": 0
-    },
-    "events": {
-      "onCreate": function () {
-        this.resourceType = 'Food';
-        this.maxStack = 5;
-        this.isQuantity = true;
-      }
-    },
-    "parent": 'ss_items_resources',
-    "name": 'White Meat'
+    "name": 'Adhesives'
   };
   _BLUEPRINTS.INV_ITEMS.ss_item_cookedmeat = {
     "sprite": 'sprite_meat_cooked',
@@ -3895,7 +3629,7 @@
       "blockWidth": 2,
       "blockHeight": 2,
       "value": 55,
-      "weight": 0
+      "weight": 3
     },
     "events": {
       "onCreate": function () {
@@ -3907,24 +3641,62 @@
     "parent": 'ss_items_resources',
     "name": 'Cooked Meat'
   };
-  _BLUEPRINTS.INV_ITEMS.ss_item_skin = {
-    "sprite": 'sprite_skin',
+  _BLUEPRINTS.INV_ITEMS.ss_item_building_material = {
+    "sprite": 'sprite_buildingmaterial',
     "meta": {
-      "description": 'It\'s the skin of a living creature... creepy.',
+      "description": 'A box of supplies for building structures',
       "slots": 'resource',
       "blockWidth": 2,
       "blockHeight": 2,
-      "value": 160,
-      "weight": 0
+      "value": 100,
+      "weight": 3
     },
     "events": {
       "onCreate": function () {
-        this.maxStack = 25;
+        this.maxStack = 5;
         this.isQuantity = true;
       }
     },
     "parent": 'ss_items_resources',
-    "name": 'Skin'
+    "name": 'Building Supplies'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_metalore = {
+    "sprite": 'sprite_ore_metal',
+    "meta": {
+      "description": 'Strongest crafting material for defense and strength',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 50,
+      "weight": 3
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 5;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Metal Ore'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_hemp = {
+    "sprite": 'sprite_hemp',
+    "meta": {
+      "description": 'Strongest crafting material for defense and strength',
+      "slots": 'resource',
+      "blockWidth": 22,
+      "blockHeight": 22,
+      "value": 50,
+      "weight": 5
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 5;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Hemps'
   };
   _BLUEPRINTS.INV_ITEMS.ss_item_spidereye = {
     "sprite": 'sprite_spider_eye',
@@ -3934,7 +3706,7 @@
       "blockWidth": 2,
       "blockHeight": 2,
       "value": 80,
-      "weight": 0
+      "weight": 4
     },
     "events": {
       "onCreate": function () {
@@ -3945,6 +3717,82 @@
     "parent": 'ss_items_resources',
     "name": 'Arachnid Eye'
   };
+  _BLUEPRINTS.INV_ITEMS.ss_item_sheetmetal = {
+    "sprite": 'item_rusty_metal',
+    "meta": {
+      "description": 'Used to join crafting componenets together',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 350,
+      "weight": 4
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 5;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Sheet Metal'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_roboeye = {
+    "sprite": 'sprite_roboeye',
+    "meta": {
+      "description": 'A rare stone used in earth crafting',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 230,
+      "weight": 4
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 3;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Robo Eye'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_mechscrap = {
+    "sprite": 'sprite_mechscrap',
+    "meta": {
+      "description": 'Mechanical scrap for moving components',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 130,
+      "weight": 4
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 3;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Mechanical Scrap'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_metalingot = {
+    "sprite": 'sprite_ingot_metal',
+    "meta": {
+      "description": 'Strongest crafting material for defense and strength',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 650,
+      "weight": 4
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 3;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Metal Ingot'
+  };
   _BLUEPRINTS.INV_ITEMS.ss_item_jyelo = {
     "sprite": 'sprite_jyelo',
     "meta": {
@@ -3953,7 +3801,7 @@
       "blockWidth": 2,
       "blockHeight": 2,
       "value": 140,
-      "weight": 0
+      "weight": 5
     },
     "events": {
       "onCreate": function () {
@@ -3964,15 +3812,15 @@
     "parent": 'ss_items_resources',
     "name": 'Jyelo'
   };
-  _BLUEPRINTS.INV_ITEMS.ss_item_adhesive = {
-    "sprite": 'item_adhesive',
+  _BLUEPRINTS.INV_ITEMS.ss_item_gunpowder = {
+    "sprite": 'sprite_gunpowder',
     "meta": {
-      "description": 'Used to join crafting componenets together',
+      "description": 'Gunpowder go boom.',
       "slots": 'resource',
-      "blockWidth": 22,
-      "blockHeight": 22,
-      "value": 600,
-      "weight": 0
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 260,
+      "weight": 5
     },
     "events": {
       "onCreate": function () {
@@ -3981,7 +3829,76 @@
       }
     },
     "parent": 'ss_items_resources',
-    "name": 'Adhesives'
+    "name": 'Gunpowder'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_research_node = {
+    "sprite": 'sprite_item_researchbook',
+    "meta": {
+      "description": 'A cache of nanites used for powering AI based research',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 750,
+      "weight": 5
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 5;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Research Node'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_gazoline = {
+    "sprite": 'item_gazoline',
+    "meta": {
+      "weight": 10,
+      "blockWidth": 0,
+      "blockHeight": 0,
+      "value": 300
+    },
+    "data": {},
+    "parent": 'ss_items_resources',
+    "name": 'Gazoline'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_sinstone = {
+    "sprite": 'sprite_sinstone',
+    "meta": {
+      "description": 'A rare stone used in earth crafting',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 450,
+      "weight": 5
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 3;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Sin Stone'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_redgem = {
+    "sprite": 'sprite_redgem',
+    "meta": {
+      "description": 'A colorful rare gem',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 250,
+      "weight": 5
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 3;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Red Gem'
   };
   _BLUEPRINTS.INV_ITEMS.ss_item_composites = {
     "sprite": 'sprite_composites',
@@ -3991,7 +3908,7 @@
       "blockWidth": 2,
       "blockHeight": 2,
       "value": 400,
-      "weight": 0
+      "weight": 5
     },
     "events": {
       "onCreate": function () {
@@ -4002,6 +3919,82 @@
     "parent": 'ss_items_resources',
     "name": 'Composites'
   };
+  _BLUEPRINTS.INV_ITEMS.ss_item_glass = {
+    "sprite": 'sprite_glass',
+    "meta": {
+      "description": 'A see through material, make a better window than a door',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 250,
+      "weight": 5
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 3;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Glass'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_darkiron = {
+    "sprite": 'sprite_darkiron',
+    "meta": {
+      "description": 'Strongest crafting material for defense and strength',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 350,
+      "weight": 5
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 3;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Dark Iron'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_nano_chip = {
+    "sprite": 'item_computer_chip',
+    "meta": {
+      "description": 'Used to join crafting componenets together',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 1000,
+      "weight": 5
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 3;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Nano Chip'
+  };
+  _BLUEPRINTS.INV_ITEMS.ss_item_redbar = {
+    "sprite": 'sprite_redbar',
+    "meta": {
+      "description": 'A red metal ingot for weapon crafting',
+      "slots": 'resource',
+      "blockWidth": 2,
+      "blockHeight": 2,
+      "value": 500,
+      "weight": 5
+    },
+    "events": {
+      "onCreate": function () {
+        this.maxStack = 3;
+        this.isQuantity = true;
+      }
+    },
+    "parent": 'ss_items_resources',
+    "name": 'Red Bar'
+  };
   _BLUEPRINTS.INV_ITEMS.ss_item_sinchip = {
     "sprite": 'sprite_sinchip',
     "meta": {
@@ -4009,8 +4002,8 @@
       "slots": 'resource',
       "blockWidth": 2,
       "blockHeight": 2,
-      "value": 600,
-      "weight": 0
+      "value": 1000,
+      "weight": 5
     },
     "events": {
       "onCreate": function () {
