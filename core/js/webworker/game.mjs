@@ -287,17 +287,27 @@ function checkIsNodeJs() {
 	return typeof process === "object";
 }
 
+const urlVar = {};
+location.search.slice(1).split("&").forEach((key_value) => {
+	const kv = key_value.split("=");
+	urlVar[kv[0]] = kv[1];
+});
+
+
 function isLive() {
+	
 	//Works for webworkers
-	if(localStorage.getItem('_file_gamedata/global/keys')) { //This key would be created by now?
+	if(urlVar['localStorage'] || urlVar['isLive']) {
 		return true;
 	}
+	
 	//Works for fronted
 	if(typeof game !== "undefined" && typeof game.urlVar === "function") {
 		if(game.urlVar('localStorage')) {
 			return true;
 		}
 	}
+	
 	if(isElectron()) {
 		return true;
 	}

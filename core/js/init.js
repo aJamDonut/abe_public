@@ -63015,6 +63015,36 @@ function checkIsNodeJs() {
 	return typeof process === "object";
 }
 
+const urlVar = {};
+location.search.slice(1).split("&").forEach((key_value) => {
+	const kv = key_value.split("=");
+	urlVar[kv[0]] = kv[1];
+});
+
+
+function isLive() {
+	
+	//Works for webworkers
+	if(urlVar['localStorage'] || urlVar['isLive']) {
+		return true;
+	}
+	
+	//Works for fronted
+	if(typeof game !== "undefined" && typeof game.urlVar === "function") {
+		if(game.urlVar('localStorage')) {
+			return true;
+		}
+	}
+	
+	if(isElectron()) {
+		return true;
+	}
+	if(isNw()) {
+		return true;
+	}
+	return false;
+}
+
 function isElectron() {
 	// Renderer process
 	if (typeof window !== "undefined" && typeof window.process === "object" && window.process.type === "renderer") {
@@ -72358,7 +72388,7 @@ class Offloader {
 			return;
 		}
 		if (game$2.urlVar("server")) {
-			this.servers.path = new Worker("core/js/webworker/NodeWorker.mjs", {
+			this.servers.path = new Worker("core/js/webworker/NodeWorker.mjs?isLive="+isLive(), {
 				type: "module"
 			});
 			this.servers.physics = this.servers.path; //Use shared worker
@@ -72367,12 +72397,12 @@ class Offloader {
 				this.servers.disk = this.servers.world; //Use shared worker
 			}
 		} else {
-			this.servers.physics = new Worker("core/js/webworker/Worker.Physics.mjs", {
+			this.servers.physics = new Worker("core/js/webworker/Worker.Physics.mjs?isLive="+isLive(), {
 				type: "module"
 			});
 
 			//console.log("Create world worker");
-			this.servers.world = new Worker("core/js/webworker/Worker.World.mjs", {type: "module"});
+			this.servers.world = new Worker("core/js/webworker/Worker.World.mjs?isLive="+isLive(), {type: "module"});
 
 			//if (game.enableDiskWorker) {
 			//	this.servers.disk = new Worker("core/js/webworker/Worker.World.mjs", {
@@ -72380,7 +72410,7 @@ class Offloader {
 			//	});
 			//}
 
-			this.servers.path = new Worker("core/js/webworker/Worker.Path.mjs", {type: "module"});
+			this.servers.path = new Worker("core/js/webworker/Worker.Path.mjs?isLive="+isLive(), {type: "module"});
 
 			//this.servers.path = new Worker("core/js/offloader/worker.path.js");
 
@@ -72389,7 +72419,7 @@ class Offloader {
 			//this.servers.world = new Worker("core/js/offloader/worker.js");
 
 			if (game$2.enableDiskWorker) {
-				this.servers.path = new Worker("core/js/webworker/Worker.World.mjs", {
+				this.servers.path = new Worker("core/js/webworker/Worker.World.mjs?isLive="+isLive(), {
 					type: "module"
 				});
 			}
