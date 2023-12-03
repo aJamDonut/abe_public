@@ -7055,6 +7055,15 @@ class AbeFSLocalStorage {
 		this.createRoot(root);
 		this.keyTimer = 0;
 		this.db = {};
+		this.localStorage = {
+			data: {}
+		};
+		this.localStorage.setItem = function(key, data){
+			this.data[key] = data;
+		};
+		this.localStorage.getItem = function(key){
+			return this.data[key] || false;
+		};
 	}
 
 	initIndexedDB() {
@@ -7115,7 +7124,7 @@ class AbeFSLocalStorage {
 
 	exists(file, _ignoreCache) {
 		file = "_file_" + this.#makeKey(file);
-		return window.localStorage.getItem(file);
+		return this.localStorage.getItem(file);
 	}
 
 	/**
@@ -7165,7 +7174,7 @@ class AbeFSLocalStorage {
 			if (typeof data !== "string") {
 				data = JSON.stringify(data);
 			}
-			window.localStorage.setItem(key, data);
+			this.localStorage.setItem(key, data);
 			return true;
 		} catch (e) {
 			this.fallbackIndexedDbWrite(key, data);
@@ -7176,7 +7185,7 @@ class AbeFSLocalStorage {
 		const key = "_file_" + this.#makeKey(url);
 
 		//Is getting
-		let data = window.localStorage.getItem(key);
+		let data = this.localStorage.getItem(key);
 
 		if (data) {
 			try {
