@@ -61018,6 +61018,7 @@ class Render {
 		this.lastWidth = 0;
 		this.genText = {};
 
+		//TODO: readd later
 		this.lang = {}; // game.fs.loadSync("deaddesert/lang/en.json");
 		//this.langSave = setTimeout(() => {
 		//	game.fs.saveSync("deaddesert/lang/en.json", this.lang);
@@ -63073,9 +63074,8 @@ function isElectron() {
  * @returns {boolean} True if NW OR Nodejs false if anything else
  */
 function isNw() {
-	
 	//Catch for nodejs
-	if (checkIsNodeJs()) {
+	if (!isElectron() && checkIsNodeJs()) {
 		return true;
 	}
 
@@ -69657,21 +69657,25 @@ let Inventory$1 = class Inventory {
 		}
 
 		if (this.owner.baseClass == "BaseLife") {
-			this.owner.data.stats.weight -= weight;
-			this.owner.sync();
+			item.inventory.owner.data.stats.weight -= weight;
+			item.inventory.owner.sync();
 		}
 	}
 
 	addOwnerWeight(item) {
+		if (item.inventory.owner.id === game$2.p.id) {
+			console.log("ADD WEIGHT", item);
+			console.error("STOCK");
+		}
 		let weight = 0;
 
 		if (item.meta && item.meta.weight) {
 			weight = item.meta.weight;
 		}
 
-		if (this.owner.baseClass == "BaseLife") {
-			this.owner.data.stats.weight += weight;
-			this.owner.sync();
+		if (item.inventory.owner.baseClass == "BaseLife") {
+			item.inventory.owner.data.stats.weight += weight;
+			item.inventory.owner.sync();
 		}
 	}
 
@@ -70396,55 +70400,76 @@ class InventoryManager {
 				};
 			}
 
-			contextMenuLinks["Drop"] = function (caller) {
-				if (game.tools.activeTool.name !== "select") {
-					return false; //Only drop when not placing somethign else.
-				}
-				//console.error("Distance: ",game.world.cDistance(game.p, caller.inventory.container));
-				if (game.world.cDistance(game.p, caller.inventory.container) > 115) {
-					game.input.mouseMsg("Too far away");
-				} else {
+			if (
+				item.inventory &&
+				item.inventory.owner &&
+				item.inventory.owner.data &&
+				item.inventory.owner.data.isPlayer
+			) {
+				contextMenuLinks["Drop"] = function (caller) {
+					console.log("Drop", caller);
+					if (
+						!caller.inventory ||
+						!caller.inventory.owner ||
+						!caller.inventory.owner.data ||
+						!caller.inventory.owner.data.isPlayer
+					) {
+						console.log("Not player");
+						return false;
+					}
+
+					const life = caller.inventory.owner;
+
 					console.error("DROP FROM", caller);
-					// Drop
+
 					caller.inventory.removeItem(caller);
-					//caller.sync(); //TODO: Probably should be inside removeItem not sure why it didnt triggre
 
 					var dropItem = new PickupItem(caller.name, caller.data);
 
 					dropItem.setScale(0.5);
 					dropItem.rotate(Math.random());
 
-					dropItem.x = game.p.x + game.rng(-32, 32);
-					dropItem.y = game.p.y + game.rng(-32, 32);
+					dropItem.x = life.x + game.rng(-32, 32);
+					dropItem.y = life.y + game.rng(-32, 32);
 					game.world.addObject(dropItem);
 					game.render.underLifeLayer.addChild(dropItem);
-				}
-			};
+				};
 
-			contextMenuLinks["Place"] = function (caller) {
-				//console.error("Distance: ",game.world.cDistance(game.p, caller.inventory.container));
-				if (game.world.cDistance(game.p, caller.inventory.container) > 115) {
-					game.input.mouseMsg("Too far away");
-				} else {
+				/*
+				contextMenuLinks["Place"] = function (caller) {
+					if (
+						!caller.inventory ||
+						!caller.inventory.owner ||
+						!caller.inventory.owner.data ||
+						!caller.inventory.owner.data.isPlayer
+					) {
+						return false;
+					}
+
+					const life = caller.inventory.owner;
+
 					game.snap = true;
-					var dropItem = caller;
+
 					try {
 						game.tools.setActiveTool("select");
 						//game.tools.setActiveTool('playerfurni'); //TODO: maybe this line was not supposed
 						//to be added, because when I remove it.. it works... God knows...
 						game.tools.setPlayerFurniTool(
-							dropItem,
+							caller,
 							function (caller) {
 								caller.inventory.removeItem(caller);
 								//game.tools.closeMenus();
 								game.tools.setActiveTool("select");
 							},
 							caller,
-							game.p
+							life
 						);
-					} catch (e) {}
-				}
-			};
+					} catch (e) {
+						console.error("Error", e);
+					}
+				};
+				*/
+			}
 
 			if (
 				this.meta.contextOptions &&
@@ -73476,6 +73501,7 @@ class Saves {
 	}
 
 	loadLife(life) {
+		console.log("Loadlife", life.data.name, life);
 		let inventory = life.inventory; //TODO: For some reason this gets destroyed when passed to LifeObject
 		const statuses = life.statuses;
 		var lifeObj = this.lifeFactory(life);
@@ -73491,17 +73517,28 @@ class Saves {
 		game$2.world.addToServer(lifeObj);
 		game$2.world.addObject(lifeObj);
 
+		console.log("Add Statuses", statuses);
+
+		//game.trickle.add(() => {
+		let keys = Object.keys(statuses);
+
+		for (let i = 0; i < keys.length; i++) {
+			let status = statuses[keys[i]];
+			if (!status.options.duration) {
+				//This is because... we use the Infinity number..... :(
+				//It does not convert for save well, but does convert for webworker well
+				status.options.duration = Infinity;
+			}
+			console.log("Add", status.status, status.options, status.startTime);
+			lifeObj.addStatusFromClient(status.status, status.options, status.startTime);
+		}
+
 		game$2.inventories.importInventories(lifeObj, inventory);
 
-		game$2.trickle.add(() => {
-			let keys = Object.keys(statuses);
-			for (let i = 0; i < keys.length; i++) {
-				let status = statuses[keys[i]];
-				lifeObj.addStatusFromClient(status.status, status.options, status.startTime);
-			}
-		});
+		//});
 
 		//game.util.makeObjectFall(lifeObj); //Makes it fall for fun
+		console.log("Finish loading", life.data.name);
 	}
 
 	loadLevelFromJson(load) {
@@ -74362,15 +74399,33 @@ class BaseLife extends mixin(PIXI$1.Container, Extensions) {
 
 		this.data.ownedAge = 0;
 		this.data.faction = this.data.faction || "wild";
-		this.data.stats = game$2.clone(this.meta.baseStats);
-
-		this.data.stats.hp = this.data.stats.maxHP;
-		this.data.stats.energy = this.data.stats.maxEnergy;
 
 		this.data.levels = this.data.levels || {};
 
 		this.data.torp = 0;
 		this.data.jobs = ["build", "buildwall", "haul", "dropoff", "store", "chop", "mine"];
+
+		if (!this.data.stats) {
+			//First innit
+			this.data.stats = game$2.clone(this.meta.baseStats);
+
+			this.data.stats.hp = this.data.stats.maxHP;
+			this.data.stats.energy = this.data.stats.maxEnergy;
+
+			this.data.stats.wood = 0;
+			this.data.stats.stone = 0;
+			this.data.stats.fabric = 0;
+			this.data.stats.adhesives = 0;
+			this.data.stats.mulch = 0;
+			this.data.stats.components = 0;
+			this.data.stats.maxWeight = 50;
+			this.data.bullet = {
+				statuses: [{status: "damage", dmg: 1, type: "blunt"}],
+				sprite: "projectile_melee",
+				lifetime: 0.1,
+				speed: 0.2
+			};
+		}
 
 		this.addStat("savage");
 		this.addStat("melee");
@@ -74381,26 +74436,11 @@ class BaseLife extends mixin(PIXI$1.Container, Extensions) {
 		this.addStat("crafting");
 		this.addStat("intelligence");
 
-		this.data.stats.wood = 0;
-		this.data.stats.stone = 0;
-		this.data.stats.fabric = 0;
-		this.data.stats.adhesives = 0;
-		this.data.stats.mulch = 0;
-		this.data.stats.components = 0;
-		this.data.stats.maxWeight = 50;
-
 		this.setWep(new ABE$1.BlankItem());
 		this.setBackWep(new ABE$1.BlankItem());
 		this.setMask(new ABE$1.BlankItem());
 		this.setBody(new ABE$1.BlankItem({sprite: "body_naked"}));
 		this.setBackpack(new ABE$1.BlankItem());
-
-		this.data.bullet = {
-			statuses: [{status: "damage", dmg: 1, type: "blunt"}],
-			sprite: "projectile_melee",
-			lifetime: 0.1,
-			speed: 0.2
-		};
 
 		this.hurtCooldown = game$2.ts;
 		this.lastHP = this.data.stats.hp;
@@ -74709,11 +74749,12 @@ class BaseLife extends mixin(PIXI$1.Container, Extensions) {
 	cloneForUI(dir) {
 		dir = dir || "right";
 
-		var clone = new ABE$1.LifeObject();
+		//It's weird, without all this faff it increased weight on the original life object???
+		var clone = new ABE$1.LifeObject(game$2.randID(), JSON.parse(JSON.stringify(game$2.clone(this.data))));
 
 		clone.clean();
-		clone.data = Object.assign({}, this.data);
-		const inventory = JSON.parse(JSON.stringify(this.inventory));
+
+		const inventory = JSON.parse(JSON.stringify(game$2.clone(this.inventory)));
 		delete inventory.brain;
 		clone.data.name = this.data.name;
 		game$2.inventories.importInventories(clone, inventory);
@@ -75275,7 +75316,7 @@ Gained a new mutation`);
 		this.data.doDistanceXP = false;
 		this.sync();
 
-		let overweight = ABE$1.Algos.isOverweight();
+		let overweight = ABE$1.Algos.isOverweight(this.data.stats.weight || 0, this.data.stats.maxWeight || 0);
 
 		if (overweight) {
 			this.xpAction("walked10blocksheavy", {overweight: overweight});
@@ -75767,21 +75808,20 @@ Gained a new mutation`);
 
 		let id = options.source || status + "-" + game$2.randID();
 
-		//When a source is provided, ensures no
-		//restacking on game save/reload, bad coder
-		//if (options.source) {
-		//	id = options.source;
-		//	if (this.hiddenStatuses[id] || this.statuses[id]) {
-		//		//Already has this source so remove don't stack it
-		//		console.log(`Wont stack ${status}`);
-		//		return false;
-		//	}
-		//}
-
 		//TODO: Move this bit to a class
 		//TODO: will this need adding to reloading?
 		let statusMeta = ABE$1._BLUEPRINTS._STATUSES["c_effect_" + status];
 		status = {status: status, options: options};
+
+		//When a source is provided, ensures no
+		//restacking on game save/reload, bad coder
+		//if (!options.stacks) {
+		//	if (this.hiddenStatuses[options.source] || this.statuses[options.source]) {
+		//			//Already has this source so remove don't stack it
+		//				console.log(`Wont stack ${status}`);//
+		//return false;
+		//}
+		//}
 
 		status.startTime = startTime || game$2.ts;
 

@@ -17,7 +17,7 @@
     "require": 'adhesive,wood,fiber',
     "amount": '10,20,20',
     "researchRequire": 'research_node',
-    "researchAmount": '5',
+    "researchAmount": '1',
     "researchParent": 'weapons',
     "parent": 'blueprint_recipe_all',
     "name": 'Snarebow'
@@ -53,7 +53,7 @@
     "require": 'sheetmetal',
     "amount": '1',
     "researchRequire": 'research_node',
-    "researchAmount": '2',
+    "researchAmount": '1',
     "researchParent": 'armor',
     "parent": 'blueprint_recipe_all',
     "name": 'Plain Mask'
@@ -65,7 +65,7 @@
     "require": 'fiber,skin,sheetmetal',
     "amount": '18,15,20',
     "researchRequire": 'research_node',
-    "researchAmount": '10',
+    "researchAmount": '1',
     "researchParent": 'armor',
     "parent": 'blueprint_recipe_all',
     "name": 'Ropey Platmail'
@@ -76,7 +76,7 @@
     "require": 'adhesive',
     "amount": '50000,10000',
     "researchRequire": 'research_node',
-    "researchAmount": '2',
+    "researchAmount": '1',
     "researchParent": 'armor',
     "parent": 'blueprint_recipe_all',
     "name": 'Docoscope'
@@ -99,7 +99,7 @@
     "require": 'fiber,skin,sheetmetal',
     "amount": '20,10,10',
     "researchRequire": 'research_node',
-    "researchAmount": '10',
+    "researchAmount": '1',
     "researchParent": 'ss_plate_armor',
     "parent": 'blueprint_recipe_all',
     "name": 'Adapted Tunic Mk 1'
@@ -114,14 +114,6 @@
     "researchParent": 'survival',
     "parent": 'blueprint_recipe_all',
     "name": 'Pickaxe'
-  };
-  _BLUEPRINTS.RECIPES.recipe_ss_weapon_club_w2 = {
-    "crafts": 'ss_weapon_club_w2',
-    "sprite": 'weapon_wooden_club',
-    "require": 'adhesive',
-    "amount": '50000,10000',
-    "parent": 'blueprint_recipe_all',
-    "name": 'Wooden Club 2'
   };
   _BLUEPRINTS.RECIPES.recipe_ss_weapon_rusty_katana = {
     "crafts": 'ss_weapon_rusty_katana',
@@ -141,7 +133,7 @@
     "require": 'wood,stone',
     "amount": '50,50,50',
     "researchRequire": 'research_node',
-    "researchAmount": '5',
+    "researchAmount": '1',
     "researchParent": 'survival',
     "parent": 'blueprint_recipe_all',
     "name": 'Stone Hatchet'
@@ -153,7 +145,7 @@
     "require": 'adhesive,wood,fiber,sheetmetal',
     "amount": '2,25,30,10',
     "researchRequire": 'research_node',
-    "researchAmount": '5',
+    "researchAmount": '1',
     "researchParent": 'weapons',
     "parent": 'blueprint_recipe_all',
     "name": 'Rusty Plank'
@@ -162,8 +154,10 @@
     "crafts": 'ss_backpack_satchel',
     "sprite": 'backpack_small',
     "crafted_in": 'ss_loom',
-    "require": 'adhesive,fiber,skin',
-    "amount": '1,25,10',
+    "require": 'wood,fiber,skin',
+    "amount": '6,25,10',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Backpack Satchel'
   };
@@ -172,6 +166,8 @@
     "sprite": 'sprite_smallrecycler',
     "require": 'components',
     "amount": '100',
+    "researchAmount": '2',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Recycler'
   };
@@ -181,6 +177,8 @@
     "crafted_in": 'build',
     "require": 'wood,stone',
     "amount": '10,10',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Camp fire'
   };
@@ -189,6 +187,8 @@
     "require": 'carbon,adhesive',
     "amount": '50000,10000',
     "sprite": 'backpack_small',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Template'
   };
@@ -197,6 +197,8 @@
     "require": 'wood',
     "amount": '10',
     "sprite": 'sprite_sign_wooden',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Wooden Sign'
   };
@@ -206,6 +208,8 @@
     "amount": '10,10,10',
     "sprite": 'sprite_bed',
     "crafted_in": 'build',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Bed'
   };
@@ -214,6 +218,8 @@
     "require": 'wood,adhesives,fabric',
     "amount": '100,25,25',
     "sprite": 'sprite_barricade_v',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Barricade Vertical'
   };
@@ -234,6 +240,8 @@
     "crafted_in": 'ss_chembench',
     "require": 'adhesive,whitemeat,skin',
     "amount": '1,10,5',
+    "researchAmount": '2',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Large Bandage'
   };
@@ -242,14 +250,18 @@
     "require": 'wood,adhesives,fabric',
     "amount": '100,25,25',
     "sprite": 'sprite_training_dummy',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Training Dummy'
   };
   _BLUEPRINTS.RECIPES.recipe_ss_weapon_crossbow = {
     "crafts": 'ss_weapon_crossbow',
     "sprite": 'wep_crossbow',
-    "require": 'adhesive,wood,fiber',
-    "amount": '1,10,10',
+    "require": 'wood,fiber',
+    "amount": '6,10',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Crossbow'
   };
@@ -258,6 +270,8 @@
     "require": 'wood,stone,fabric',
     "amount": '50,75,75',
     "sprite": 'weapon_sickle_stone',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Stone Sickle'
   };
@@ -267,6 +281,8 @@
     "amount": '10',
     "sprite": 'container_5',
     "crafted_in": 'build',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Small Storage Container'
   };
@@ -277,7 +293,7 @@
     "require": 'adhesive,wood,stone',
     "amount": '40,40,2',
     "researchRequire": 'research_node',
-    "researchAmount": '5',
+    "researchAmount": '2',
     "researchParent": 'building',
     "parent": 'blueprint_recipe_all',
     "name": 'Crafting Bench'
@@ -288,6 +304,8 @@
     "crafted_in": 'build',
     "require": 'wood,stone',
     "amount": '10,10',
+    "researchAmount": '2',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Material Bench'
   };
@@ -297,6 +315,8 @@
     "crafted_in": 'materialbench',
     "require": 'wood',
     "amount": '3',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Building Material'
   };
@@ -306,6 +326,8 @@
     "crafted_in": 'campfire',
     "require": 'rawmeat',
     "amount": '1',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Cooked Meat'
   };
@@ -328,7 +350,7 @@
     "require": 'adhesive,wood,fiber,skin',
     "amount": '2,25,25,10,15',
     "researchRequire": 'research_node',
-    "researchAmount": '5',
+    "researchAmount": '2',
     "researchParent": 'building',
     "parent": 'blueprint_recipe_all',
     "name": 'Crafting Loom'
@@ -340,7 +362,7 @@
     "require": 'adhesive,wood,fiber,spidereye,sheetmetal',
     "amount": '1,10,10,1,6',
     "researchRequire": 'research_node',
-    "researchAmount": '10',
+    "researchAmount": '1',
     "researchParent": 'weapons',
     "parent": 'blueprint_recipe_all',
     "name": 'Rusty Redword'
@@ -350,6 +372,8 @@
     "sprite": 'body_rags',
     "require": 'fiber,skin',
     "amount": '10,2',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Rags'
   };
@@ -367,10 +391,10 @@
   _BLUEPRINTS.RECIPES.recipe_ss_item_weakrope = {
     "crafts": 'ss_item_weakrope',
     "sprite": 'item_weak_rope',
-    "require": 'fiber,skin',
-    "amount": '40,5',
+    "require": 'wood,fiber,skin',
+    "amount": '6,40,2',
     "researchRequire": 'research_node',
-    "researchAmount": '5',
+    "researchAmount": '1',
     "researchParent": 'survival',
     "parent": 'blueprint_recipe_all',
     "name": 'Weak Rope'
@@ -381,7 +405,7 @@
     "require": 'wood,fiber,skin',
     "amount": '10,20,5',
     "researchRequire": 'research_node',
-    "researchAmount": '5',
+    "researchAmount": '1',
     "researchParent": 'survival',
     "parent": 'blueprint_recipe_all',
     "name": 'Satchel Backback'
@@ -391,6 +415,8 @@
     "sprite": 'weapon_stick',
     "require": 'wood',
     "amount": '20',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Shinai'
   };
@@ -400,6 +426,8 @@
     "crafted_in": 'build',
     "require": 'wood',
     "amount": '2',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Wood Wall'
   };
@@ -409,6 +437,8 @@
     "crafted_in": 'build',
     "require": 'wood,building_material,redbar',
     "amount": '2,2,12',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Build Wall Job'
   };
@@ -418,6 +448,8 @@
     "crafted_in": 'build',
     "require": 'adhesive,composites,building_material,sheetmetal',
     "amount": '1,9,10,15',
+    "researchAmount": '2',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Solar Panel Small'
   };
@@ -439,6 +471,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin,sinchip',
     "amount": '29,15,2',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'SinCorp Armor'
   };
@@ -448,6 +482,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin',
     "amount": '15,8',
+    "researchAmount": '2',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Blue Dress'
   };
@@ -457,6 +493,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin',
     "amount": '15,8',
+    "researchAmount": '2',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Pink Dress'
   };
@@ -466,6 +504,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin,sheetmetal',
     "amount": '20,10,10',
+    "researchAmount": '2',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Adapted Tunic Mk 2'
   };
@@ -475,6 +515,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin,composites,sheetmetal',
     "amount": '35,20,1,15',
+    "researchAmount": '5',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Royal Armor'
   };
@@ -484,6 +526,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin,sheetmetal',
     "amount": '28,15,10',
+    "researchAmount": '5',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Royal Garment'
   };
@@ -493,6 +537,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin',
     "amount": '15,8',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Clone Jacket 2'
   };
@@ -502,6 +548,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin',
     "amount": '10,4',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Clone Shirt 2'
   };
@@ -511,6 +559,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,composites,sheetmetal',
     "amount": '50,5,15',
+    "researchAmount": '2',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Spacevader Mk 1'
   };
@@ -520,6 +570,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin,composites,sheetmetal',
     "amount": '23,7,1,4',
+    "researchAmount": '5',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Tech Dress'
   };
@@ -529,6 +581,8 @@
     "crafted_in": 'ss_loom',
     "require": 'adhesive,composites,sheetmetal,redgem',
     "amount": '1,5,20,1',
+    "researchAmount": '5',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Slim Robot Body'
   };
@@ -538,6 +592,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin',
     "amount": '4,15',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Failed Clone Mask'
   };
@@ -547,6 +603,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,sheetmetal',
     "amount": '15,9',
+    "researchAmount": '2',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Gas Mask'
   };
@@ -556,6 +614,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,sheetmetal,glass',
     "amount": '10,7,4',
+    "researchAmount": '5',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Staff Mask'
   };
@@ -565,6 +625,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin,sheetmetal',
     "amount": '16,5,1',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Farmer Hat'
   };
@@ -573,6 +635,8 @@
     "sprite": 'body_gray',
     "require": 'whitemeat',
     "amount": '2',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Dead Head Skin'
   };
@@ -594,6 +658,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin,spidereye',
     "amount": '4,7,1',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Deathspawn Eye'
   };
@@ -603,6 +669,8 @@
     "crafted_in": 'ss_loom',
     "require": 'sheetmetal,glass,roboeye',
     "amount": '15,3,1',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Robot Head'
   };
@@ -612,6 +680,8 @@
     "crafted_in": 'ss_loom',
     "require": 'composites,sheetmetal,redgem,mechscrap',
     "amount": '2,20,1,4',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Robot Body'
   };
@@ -633,6 +703,8 @@
     "crafted_in": 'ss_loom',
     "require": 'skin,spidereye,sheetmetal,glass',
     "amount": '8,2,10,4',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Deathspawn Mask'
   };
@@ -642,6 +714,8 @@
     "crafted_in": 'ss_loom',
     "require": 'whitemeat',
     "amount": '2',
+    "researchAmount": '1',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Dead Head Face Mask'
   };
@@ -651,6 +725,8 @@
     "crafted_in": 'ss_loom',
     "require": 'wood,fiber,skin,sheetmetal',
     "amount": '11,5,3,5',
+    "researchAmount": '2',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Happy Mask'
   };
@@ -660,6 +736,8 @@
     "crafted_in": 'ss_loom',
     "require": 'adhesive,sheetmetal,mechscrap',
     "amount": '1,30,10',
+    "researchAmount": '5',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Alex Head'
   };
@@ -669,6 +747,8 @@
     "crafted_in": 'ss_loom',
     "require": 'fiber,skin,sheetmetal',
     "amount": '13,20,3',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Collector Mask'
   };
@@ -678,6 +758,8 @@
     "crafted_in": 'ss_loom',
     "require": 'wood,fiber,skin,sheetmetal',
     "amount": '10,9,5,10',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'The Jester'
   };
@@ -687,6 +769,8 @@
     "crafted_in": 'ss_loom',
     "require": 'composites,roboeye,mechscrap',
     "amount": '3,1,20',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Sphere head'
   };
@@ -697,7 +781,7 @@
     "require": 'adhesive,wood,skin,composites',
     "amount": '1,15,10,24',
     "researchRequire": 'research_node',
-    "researchAmount": '5',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_rusty_katana',
     "parent": 'blueprint_recipe_all',
     "name": 'Katana'
@@ -708,6 +792,8 @@
     "crafted_in": 'ss_smithy',
     "require": 'adhesive,skin,composites,sheetmetal',
     "amount": '1,5,15,10',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Sabre'
   };
@@ -718,7 +804,7 @@
     "require": 'adhesive,skin,composites,darkiron',
     "amount": '4,30,20,15',
     "researchRequire": 'research_node,sinstone',
-    "researchAmount": '25,10',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_katana',
     "parent": 'blueprint_recipe_all',
     "name": 'Black Katana'
@@ -730,7 +816,7 @@
     "require": 'adhesive,composites,redbar',
     "amount": '10,25,25',
     "researchRequire": 'research_node',
-    "researchAmount": '20',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_rusty_plank',
     "parent": 'blueprint_recipe_all',
     "name": 'Reine Plank'
@@ -741,6 +827,8 @@
     "crafted_in": 'ss_smithy',
     "require": 'adhesive,wood,fiber,skin,spidereye,composites,sheetmetal',
     "amount": '2,20,11,13,4,23,7',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Skedeye Clipper'
   };
@@ -750,6 +838,8 @@
     "crafted_in": 'ss_smithy',
     "require": 'adhesive,wood,fiber,skin,composites',
     "amount": '2,18,10,13,23',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Boomstick'
   };
@@ -759,6 +849,8 @@
     "crafted_in": 'ss_smithy',
     "require": 'adhesive,wood,fiber,skin,composites',
     "amount": '1,7,8,10,15',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Bow'
   };
@@ -768,6 +860,8 @@
     "crafted_in": 'ss_smithy',
     "require": 'adhesive,wood,fiber,skin,composites,mechscrap',
     "amount": '2,15,10,12,5,10',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Advanced Bow'
   };
@@ -777,6 +871,8 @@
     "crafted_in": 'ss_smithy',
     "require": 'adhesive,fiber,darkiron',
     "amount": '2,5,10',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Kunai'
   };
@@ -786,6 +882,8 @@
     "crafted_in": 'ss_smithy',
     "require": 'adhesive,composites',
     "amount": '1,10',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Shuriken'
   };
@@ -796,7 +894,7 @@
     "require": 'adhesive,composites,sinchip,sheetmetal,nano_chip',
     "amount": '1,30,1,10,1',
     "researchRequire": 'research_node,sinstone',
-    "researchAmount": '25,1',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_club_w',
     "parent": 'blueprint_recipe_all',
     "name": 'Sin Baton'
@@ -806,6 +904,8 @@
     "sprite": 'sprite_bedroll',
     "require": 'fiber,skin',
     "amount": '20,10',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Bedroll'
   };
@@ -815,6 +915,8 @@
     "crafted_in": 'build',
     "require": 'bedroll',
     "amount": '1',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Bedroll'
   };
@@ -824,6 +926,8 @@
     "crafted_in": 'smelter',
     "require": 'redgem',
     "amount": '5',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Redbar recipe'
   };
@@ -834,7 +938,7 @@
     "require": 'wood',
     "amount": '1',
     "researchRequire": 'research_node',
-    "researchAmount": '10',
+    "researchAmount": '3',
     "researchParent": 'building',
     "parent": 'blueprint_recipe_all',
     "name": 'Smelter'
@@ -846,7 +950,7 @@
     "require": 'adhesive,sinchip,nano_chip,roboeye,mechscrap',
     "amount": '5,1,5,2,5',
     "researchRequire": 'research_node,sinstone',
-    "researchAmount": '10,1',
+    "researchAmount": '3,2',
     "researchParent": 'building',
     "parent": 'blueprint_recipe_all',
     "name": 'Splicer'
@@ -856,6 +960,8 @@
     "sprite": 'sprite_craftbench2',
     "require": 'sinchip,nano_chip,redbar',
     "amount": '5,5,10',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Research Bench'
   };
@@ -865,7 +971,7 @@
     "require": 'composites,redbar',
     "amount": '10,10',
     "researchRequire": 'research_node',
-    "researchAmount": '5',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_pickaxe',
     "parent": 'blueprint_recipe_all',
     "name": 'Redgem Axe'
@@ -877,7 +983,7 @@
     "require": 'composites,redgem,darkiron',
     "amount": '25,25,25',
     "researchRequire": 'research_node,sinstone',
-    "researchAmount": '25,25',
+    "researchAmount": '3,2',
     "researchParent": 'ss_weapon_redgem_pickaxe',
     "parent": 'blueprint_recipe_all',
     "name": 'Dark Iron Pickaxe'
@@ -889,7 +995,7 @@
     "require": 'adhesive,whitemeat,glass',
     "amount": '5,10,10',
     "researchRequire": 'research_node',
-    "researchAmount": '10',
+    "researchAmount": '3',
     "researchParent": 'ss_item_bandage_small',
     "parent": 'blueprint_recipe_all',
     "name": 'Medical Pen'
@@ -899,6 +1005,8 @@
     "sprite": 'container_5',
     "require": 'wood',
     "amount": '10',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Player Storage'
   };
@@ -908,6 +1016,8 @@
     "crafted_in": 'smelter',
     "require": 'metalore',
     "amount": '2',
+    "researchAmount": '3',
+    "researchRequire": 'research_node',
     "parent": 'blueprint_recipe_all',
     "name": 'Metal Ignot recipe'
   };
@@ -918,7 +1028,7 @@
     "require": 'fiber,skin',
     "amount": '25,10',
     "researchRequire": 'research_node',
-    "researchAmount": '2',
+    "researchAmount": '3',
     "researchParent": 'ss_body_camo',
     "parent": 'blueprint_recipe_all',
     "name": 'Smokers Jacket'
@@ -930,7 +1040,7 @@
     "require": 'fiber,skin,sheetmetal',
     "amount": '20,10,2',
     "researchRequire": 'research_node',
-    "researchAmount": '1',
+    "researchAmount": '3',
     "researchParent": 'ss_clone_jacket',
     "parent": 'blueprint_recipe_all',
     "name": 'Doctors Jacket'
@@ -942,7 +1052,7 @@
     "require": 'fiber,skin',
     "amount": '16,10',
     "researchRequire": 'research_node',
-    "researchAmount": '1',
+    "researchAmount": '3',
     "researchParent": 'ss_mask_ranchet',
     "parent": 'blueprint_recipe_all',
     "name": 'Western Hat and Mask'
@@ -954,7 +1064,7 @@
     "require": 'adhesive,fiber,skin,composites',
     "amount": '2,20,10,23',
     "researchRequire": 'research_node,sinstone',
-    "researchAmount": '20,5',
+    "researchAmount": '3,2',
     "researchParent": 'ss_weapon_reine_plank',
     "parent": 'blueprint_recipe_all',
     "name": 'Big Plank'
@@ -966,7 +1076,7 @@
     "require": 'adhesive,wood,fiber,skin,spidereye,redbar',
     "amount": '2,12,20,10,2,13',
     "researchRequire": 'research_node',
-    "researchAmount": '25',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_rust_redword',
     "parent": 'blueprint_recipe_all',
     "name": 'Redword Sword'
@@ -978,7 +1088,7 @@
     "require": 'adhesive,fiber,composites,darkiron',
     "amount": '3,12,20,16',
     "researchRequire": 'research_node',
-    "researchAmount": '30',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_snarebow',
     "parent": 'blueprint_recipe_all',
     "name": 'Advanced Crossbow'
@@ -990,7 +1100,7 @@
     "require": 'adhesive,wood,stone,composites,sheetmetal',
     "amount": '5,50,100,10,3',
     "researchRequire": 'research_node',
-    "researchAmount": '5',
+    "researchAmount": '3',
     "researchParent": 'pers_worlditem_smelter',
     "parent": 'blueprint_recipe_all',
     "name": 'Crafting Smithy'
@@ -1002,7 +1112,7 @@
     "require": 'adhesive,wood,composites',
     "amount": '5,100,20',
     "researchRequire": 'research_node',
-    "researchAmount": '15',
+    "researchAmount": '3',
     "researchParent": 'ss_loom',
     "parent": 'blueprint_recipe_all',
     "name": 'Crafting Chem Bench'
@@ -1014,7 +1124,7 @@
     "require": 'fiber,sheetmetal,mechscrap',
     "amount": '8,15,8',
     "researchRequire": 'research_node',
-    "researchAmount": '5',
+    "researchAmount": '3',
     "researchParent": 'ss_mask_eyescanner',
     "parent": 'blueprint_recipe_all',
     "name": 'Junk Droid'
@@ -1026,7 +1136,7 @@
     "require": 'adhesive,fiber,skin,composites,sheetmetal,redgem,redbar',
     "amount": '3,12,10,11,10,1,20',
     "researchRequire": 'research_node,sinstone',
-    "researchAmount": '25,10',
+    "researchAmount": '3,2',
     "researchParent": 'ss_weapon_redword',
     "parent": 'blueprint_recipe_all',
     "name": 'Reinforced Redword'
@@ -1038,7 +1148,7 @@
     "require": 'adhesive,composites,sinchip,glass,mechscrap',
     "amount": '5,10,5,10,10',
     "researchRequire": 'research_node,sinstone',
-    "researchAmount": '20,10',
+    "researchAmount": '5,2',
     "researchParent": 'ss_splicer',
     "parent": 'blueprint_recipe_all',
     "name": 'Clone Pod'
@@ -1050,7 +1160,7 @@
     "require": 'composites,redbar',
     "amount": '10,10',
     "researchRequire": 'research_node',
-    "researchAmount": '20',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_hatchet_st',
     "parent": 'blueprint_recipe_all',
     "name": 'Redgem Hatchet'
@@ -1062,7 +1172,7 @@
     "require": 'composites,redgem,darkiron',
     "amount": '10,10,10',
     "researchRequire": 'research_node,sinstone',
-    "researchAmount": '15,5',
+    "researchAmount": '3,2',
     "researchParent": 'ss_weapon_hatchet_redgem',
     "parent": 'blueprint_recipe_all',
     "name": 'Dark Iron Hatchet'
@@ -1086,7 +1196,7 @@
     "require": 'fiber,skin,composites,sinchip',
     "amount": '43,24,2,1',
     "researchRequire": 'research_node',
-    "researchAmount": '25',
+    "researchAmount": '3',
     "researchParent": 'ss_body_tunic_1',
     "parent": 'blueprint_recipe_all',
     "name": 'SinCorp Recon'
@@ -1098,7 +1208,7 @@
     "require": 'adhesive,wood,skin,composites,nano_chip',
     "amount": '1,20,10,20,1',
     "researchRequire": 'research_node',
-    "researchAmount": '20',
+    "researchAmount": '3',
     "researchParent": 'weapons',
     "parent": 'blueprint_recipe_all',
     "name": 'Handgun'
@@ -1110,7 +1220,7 @@
     "require": 'adhesive,wood,composites,sheetmetal,mechscrap',
     "amount": '2,23,19,10,9',
     "researchRequire": 'research_node',
-    "researchAmount": '15',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_handgun',
     "parent": 'blueprint_recipe_all',
     "name": 'Scorpion'
@@ -1122,7 +1232,7 @@
     "require": 'adhesive,wood,fiber,skin,gunpowder,sheetmetal',
     "amount": '2,20,11,10,14,30',
     "researchRequire": 'research_node',
-    "researchAmount": '20',
+    "researchAmount": '3',
     "researchParent": 'weapons',
     "parent": 'blueprint_recipe_all',
     "name": 'Antique Rifle'
@@ -1134,7 +1244,7 @@
     "require": 'adhesive,wood,fiber,skin,sheetmetal',
     "amount": '2,22,10,12,24',
     "researchRequire": 'research_node',
-    "researchAmount": '20',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_scorpion',
     "parent": 'blueprint_recipe_all',
     "name": 'Sawn off Shotgun'
@@ -1146,7 +1256,7 @@
     "require": 'adhesive,wood,fiber,skin,composites,gunpowder,sheetmetal',
     "amount": '2,30,18,13,28,10,7',
     "researchRequire": 'research_node',
-    "researchAmount": '20',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_antique_rifle',
     "parent": 'blueprint_recipe_all',
     "name": 'Antique Shotgun'
@@ -1158,7 +1268,7 @@
     "require": 'adhesive,composites,nano_chip,mechscrap,darkiron',
     "amount": '3,30,3,10,13',
     "researchRequire": 'research_node',
-    "researchAmount": '20',
+    "researchAmount": '3',
     "researchParent": 'ss_weapon_antique_shotgun',
     "parent": 'blueprint_recipe_all',
     "name": 'Advanced Shotgun'
