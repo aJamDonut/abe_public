@@ -381,12 +381,17 @@
     "events": {
       "onEquipt": function (item, life) {
         life.data.brain = 'player_clone';
+        life.data.faction = 'nomad';
         game.session.addPlayerPawn(life);
         life.sync();
         if (!game.mainHud) {
           game.mainHud = game.render.component('hud_main');
           game.render.aboveAll.addChild(game.mainHud);
         }
+        life.addStatusFromClient('clone_needs', {
+          duration: Infinity,
+          source: 'gamestart'
+        });
         life.craft = function () {
           var requires = this.recipe.require.split(",");
           var amounts = this.recipe.amount.split(",");

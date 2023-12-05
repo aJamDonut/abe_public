@@ -1,576 +1,3 @@
-/*
-
-Special consideration:
-
-Save files can be very big > 20mb
-
-PHP or any webserver/browser settings must ensure 20mb+ POST can be performed.
-
-*/
-
-class AbeFSAjax {
-	constructor(root, readOnly, infoLogger, errorLogger) {
-		this.infoLogger = infoLogger || console.log;
-		this.errorLogger = errorLogger || console.error;
-		this.folder = this.root = root;
-		this.readOnly = readOnly;
-		this.httpRoot = "/ABE/";
-		this.ready = true;
-		this.folderCache = {}; //Remember about already created folders
-		this.keyCache = {}; //Remember about keys
-		if (!this.ready) {
-			this.errorLogger("[ABE] Broken fs dependency");
-			return;
-		}
-
-		this.keyFile = "keys.json";
-
-		this.createRoot(root);
-		this.keyTimer = 0;
-	}
-
-	addKey(name) {
-		if (this.keyCache[name]) {
-			return; //We already know about this one
-		}
-		this.keyCache[name] = true;
-		if (this.keyTimer) {
-			clearTimeout(this.keyTimer);
-		}
-		//Reduce writing to file to avoid overwriting
-		this.keyTimer = setTimeout(() => {
-			this.writeFileSync(this.keyFile, this.keyCache);
-		}, 1000);
-	}
-
-	#getFilename(filename) {
-		filename = this.#stripFileExtension(filename) + ".json";
-		//Package is protected name
-		let protectedFile = "package.json";
-		if (filename.substr(-protectedFile.length) == protectedFile) {
-			throw "Cannot write file";
-		}
-		return filename;
-	}
-
-	#stripFileExtension(filename) {
-		const lastDotIndex = filename.lastIndexOf(".");
-		if (lastDotIndex === -1) {
-			return filename; // No file extension found
-		} else {
-			return filename.slice(0, lastDotIndex);
-		}
-	}
-
-	async writeFileSync(filename, data, callback) {
-		if (!callback) {
-			callback = this.defaultCallback;
-		}
-		if (this.readOnly) {
-			return callback({});
-		}
-		filename = this.#getFilename(filename);
-		try {
-			this.infoLogger("Write file async");
-			let post = new FormData();
-			post.append("data", JSON.stringify(data));
-			await fetch(
-				this.httpRoot + "php/writefile.php?out=" + this.folder + "&file=" + filename + "&ts=" + Date.now(),
-				{
-					method: "POST",
-					body: post
-				}
-			).then(callback);
-			this.addKey(filename);
-		} catch (e) {
-			this.errorLogger(data);
-			JSON.stringify(data);
-		}
-	}
-
-	writeFile(filename, data, callback) {
-		if (!callback) {
-			callback = this.defaultCallback;
-		}
-		if (this.readOnly) {
-			return callback({});
-		}
-		filename = this.#getFilename(filename);
-		try {
-			this.infoLogger("Write file");
-			let post = new FormData();
-			post.append("data", JSON.stringify(data));
-			fetch(this.httpRoot + "php/writefile.php?out=" + this.folder + "&file=" + filename + "&ts=" + Date.now(), {
-				method: "POST",
-				body: post
-			}).then(callback);
-			this.addKey(filename);
-		} catch (e) {
-			this.errorLogger(data);
-			JSON.stringify(data);
-		}
-	}
-
-	writeFileRaw(filename, data, callback) {
-		if (!callback) {
-			callback = this.defaultCallback;
-		}
-		if (this.readOnly) {
-			return callback({});
-		}
-		try {
-			let post = new FormData();
-			post.append("data", JSON.stringify(data));
-			fetch(this.httpRoot + "php/writefile.php?out=./&file=" + filename + "&ts=" + Date.now(), {
-				method: "POST",
-				body: post
-			}).then(callback);
-		} catch (e) {
-			this.errorLogger(data);
-			JSON.stringify(data);
-		}
-	}
-
-	setFolder(folder, create) {
-		if (this.folder == this.root + "/" + folder) {
-			return; //Already this folder
-		}
-		if (create) {
-			this.createFolder(folder);
-		}
-
-		this.folder = this.root + "/" + folder;
-
-		if (this.exists(this.folder + "/" + this.keyFile, true)) {
-			this.keyCache = this.readFileSync(this.keyFile);
-		} else {
-			this.keyCache = {}; //No keeeeeyz
-		}
-	}
-
-	readFileRaw(filename, callback) {
-		if (!callback) {
-			callback = this.defaultCallback();
-		}
-		filename = this.#getFilename(filename);
-		fetch(this.httpRoot + filename + "?ts=" + Date.now())
-			.then(function (res) {
-				return res.json();
-			})
-			.then(callback);
-	}
-
-	readFile(filename, callback) {
-		if (!callback) {
-			callback = this.defaultCallback();
-		}
-		filename = this.#getFilename(filename);
-		fetch(this.httpRoot + filename + "?ts=" + Date.now())
-			.then(function (res) {
-				return res.json();
-			})
-			.then(callback);
-	}
-
-	syncReq(url) {
-		let request = new XMLHttpRequest();
-		request.open("GET", this.httpRoot + url, false); // `false` makes the request synchronous
-		request.send(null);
-		let result = {};
-		if (request.status === 200) {
-			if (request.responseText.substring(0, 1) == "{") {
-				try {
-					result = JSON.parse(request.responseText);
-				} catch (e) {
-					this.errorLogger("[ABE-ERROR] Failed to read AJAX result", url, request.responseText);
-					result = "";
-				}
-			} else {
-				result = request.responseText;
-			}
-		} else {
-			return "";
-		}
-		return result;
-	}
-
-	exists(file, ignoreCache) {
-		if (this.keyCache[file]) {
-			return true;
-		}
-
-		if (ignoreCache) {
-			let result = this.syncReq("php/exists.php?exists=" + file + "&ts=" + Date.now());
-			return !!result.exists;
-		}
-
-		return false;
-	}
-
-	createRoot(root) {
-		if (this.exists(root, true)) {
-			return true;
-		}
-
-		return this.syncReq("php/createfolder.php?folder=" + root + "&ts=" + Date.now());
-	}
-
-	//TODO: add to node
-	copyFolder(src, dir) {
-		let result = this.syncReq(
-			"php/copyfolder.php?folderIn=" + src + "&folderOut=" + this.root + "/" + dir + "&ts=" + Date.now()
-		);
-		if (result) {
-			return 1;
-		} else {
-			return 0;
-		}
-	}
-
-	createFolder(folder) {
-		if (this.folderExists(folder)) {
-			return true;
-		}
-
-		let result = this.syncReq("php/createfolder.php?folder=" + this.root + "/" + folder + "&ts=" + Date.now());
-		if (result) {
-			return 1;
-		} else {
-			return 0;
-		}
-	}
-
-	keyExists(key) {
-		if (!this.keyCache[key] && !this.keyCache[key + ".json"]) {
-			return false;
-		}
-		return true;
-	}
-
-	folderExists(folder) {
-		if (!this.folderCache[folder]) {
-			this.folderCache[folder] = this.exists(this.root + "/" + folder, true);
-		}
-		return this.folderCache[folder];
-	}
-
-	defaultCallback() {}
-
-	save(key, value, callback) {
-		this.writeFile(key, value, callback);
-	}
-
-	saveSync(key, value, callback) {
-		this.writeFileSync(key, value, callback);
-	}
-
-	readFileSync(filename) {
-		filename = this.#getFilename(filename);
-		console.log("[FILE-READ] ", this.folder + "/" + filename + "?ts=" + Date.now());
-		return this.syncReq(this.folder + "/" + filename + "?ts=" + Date.now());
-	}
-
-	loadSync(key) {
-		return this.readFileSync(key);
-	}
-
-	load(key, callback) {
-		this.readFile(key, callback);
-	}
-
-	getFolder(folder) {
-		return JSON.parse(this.syncReq(`php/getFolder.php?folder=../${folder}&ts=` + Date.now()));
-	}
-}
-
-function checkIsNodeJs() {
-	return typeof process === "object";
-}
-
-const urlVar = {};
-location.search.slice(1).split("&").forEach((key_value) => {
-	const kv = key_value.split("=");
-	urlVar[kv[0]] = kv[1];
-});
-
-
-function isLive() {
-	
-	//Works for webworkers
-	if(urlVar['localStorage'] || urlVar['isLive']) {
-		return true;
-	}
-	
-	//Works for fronted
-	if(typeof game !== "undefined" && typeof game.urlVar === "function") {
-		if(game.urlVar('localStorage')) {
-			return true;
-		}
-	}
-	
-	if(isElectron()) {
-		return true;
-	}
-	if(isNw()) {
-		return true;
-	}
-	return false;
-}
-
-function isElectron() {
-	// Renderer process
-	if (typeof window !== "undefined" && typeof window.process === "object" && window.process.type === "renderer") {
-		return true;
-	}
-
-	// Main process
-	if (typeof process !== "undefined" && typeof process.versions === "object" && !!process.versions.electron) {
-		return true;
-	}
-
-	// Detect the user agent when the `nodeIntegration` option is set to true
-	if (
-		typeof navigator === "object" &&
-		typeof navigator.userAgent === "string" &&
-		navigator.userAgent.indexOf("Electron") >= 0
-	) {
-		return true;
-	}
-	return false;
-}
-
-/**
- * Checks if running in NW.js
- * Works for Web Workers and Browser
- * @returns {boolean} True if NW OR Nodejs false if anything else
- */
-function isNw() {
-	
-	//Catch for nodejs
-	if (checkIsNodeJs()) {
-		return true;
-	}
-
-	try {
-		if (typeof self !== "undefined" && self.__nw_require) {
-			return true;
-		}
-		if (nw !== undefined) {
-			if (nw.Window !== undefined) {
-				return true;
-			}
-		}
-	} catch (e) {
-		return false;
-	}
-
-	return false;
-}
-
-/**
- * @exports AbeFS
- * @class AbeFS
- * The FileSystem
- */
-let fs = null;
-
-
-if (isNw() || isElectron()) {
-	fs = await require("fs");
-}
-class AbeFS {
-	#fs = null;
-	constructor(root, readOnly, infoLogger, errorLogger) {
-		this.infoLogger = infoLogger || console.log;
-		this.errorLogger = errorLogger || console.error;
-		this.#fs =  fs;
-		
-		this.root = root;
-		this.folder = root;
-		this.readOnly = readOnly;
-		this.ready = true;
-		this.folderCache = {}; //Remember about already created folders
-		this.keyCache = {}; //Remember about keys
-		if (!this.ready) {
-			this.errorLogger("[ABE] Broken fs dependency");
-			return;
-		}
-
-		this.keyFile = "keys.json";
-
-		this.createRoot();
-		this.keyTimer = null;
-	}
-
-	addKey(name) {
-		if (this.keyCache[name]) {
-			return; //We already know about this one
-		}
-		this.keyCache[name] = true;
-		if (this.keyTimer) {
-			clearTimeout(this.keyTimer);
-		}
-		//Reduce writing to file to avoid overwriting
-		this.keyTimer = setTimeout(() => {
-			this.writeFileSync(this.keyFile, this.keyCache);
-		}, 1000);
-	}
-
-	#getFilename(filename) {
-		filename = this.#stripFileExtension(filename) + ".json";
-		//Package is protected name
-		let protectedFile = "package.json";
-		if (filename.substr(-protectedFile.length) == protectedFile) {
-			throw "Cannot write file";
-		}
-		return filename;
-	}
-
-	#stripFileExtension(filename) {
-		const lastDotIndex = filename.lastIndexOf(".");
-		if (lastDotIndex === -1) {
-			return filename; // No file extension found
-		} else {
-			return filename.slice(0, lastDotIndex);
-		}
-	}
-
-	writeFileSync(filename, data, callback) {
-		if (!callback) {
-			callback = this.defaultCallback;
-		}
-		filename = this.#getFilename(filename);
-		this.#fs.writeFileSync(this.folder + "/" + filename, JSON.stringify(data), callback);
-
-		this.addKey(filename);
-		if (typeof callback == "function") {
-			callback();
-		}
-	}
-
-	writeFile(filename, data, callback) {
-		if (!callback) {
-			callback = this.defaultCallback;
-		}
-		filename = this.#getFilename(filename);
-		this.#fs.writeFile(this.folder + "/" + filename, JSON.stringify(data), callback);
-		this.addKey(filename);
-	}
-
-	setFolder(folder, create) {
-		if (this.folder == this.root + "/" + folder) {
-			return; //Already this folder
-		}
-		if (create) {
-			this.createFolder(folder);
-		}
-
-		this.folder = this.root + "/" + folder;
-
-		if (this.exists(this.folder + "/" + this.keyFile, true)) {
-			this.keyCache = this.readFileSync(this.keyFile);
-		} else {
-			this.keyCache = {}; //No keeeeeyz
-		}
-	}
-
-	readFileRaw(filename, callback) {
-		if (!callback) {
-			callback = this.defaultCallback();
-		}
-		filename = this.#getFilename(filename);
-		this.#fs.readFile(filename, "utf8", (err, data) => {
-			if (err) {
-				this.errorLogger(err);
-				callback(false);
-				return false;
-			}
-			callback(JSON.parse(data));
-		});
-	}
-
-	readFile(filename, callback) {
-		if (!callback) {
-			callback = this.defaultCallback();
-		}
-		filename = this.#getFilename(filename);
-		this.#fs.readFile(this.folder + "/" + filename, "utf8", (err, data) => {
-			if (err) {
-				callback(false);
-				return false;
-			}
-			callback(JSON.parse(data));
-		});
-	}
-
-	exists(filename, ignoreCache) {
-		if (this.keyCache[filename]) {
-			return true;
-		}
-
-		if (ignoreCache) {
-			return this.#fs.existsSync(filename);
-		}
-
-		return false;
-	}
-
-	createRoot(root) {
-		if (this.#fs.existsSync(this.root)) {
-			return true;
-		}
-		return this.#fs.mkdirSync(this.root);
-	}
-
-	createFolder(folder) {
-		if (this.folderExists(folder)) {
-			return true;
-		}
-		return this.#fs.mkdirSync(this.root + "/" + folder);
-	}
-
-	keyExists(key) {
-		if (!this.keyCache[key] && !this.keyCache[key + ".json"]) {
-			return false;
-		}
-		return true;
-	}
-
-	folderExists(folder) {
-		if (!this.folderCache[folder]) {
-			this.folderCache[folder] = this.exists(this.root + "/" + folder, true);
-		}
-		return this.folderCache[folder];
-	}
-
-	defaultCallback() {}
-
-	readFileSync(filename) {
-		filename = this.#getFilename(filename);
-		return JSON.parse(this.#fs.readFileSync(this.folder + "/" + filename, {encoding: "utf8", flag: "r"}));
-	}
-
-	loadSync(key) {
-		return this.readFileSync(key);
-	}
-
-	save(key, value, callback) {
-		this.writeFile(key, value, callback);
-	}
-
-	saveSync(key, value, callback) {
-		this.writeFileSync(key, value, callback);
-	}
-
-	load(key, callback) {
-		this.readFile(key, callback);
-	}
-
-	getFolder(folder) {
-		return this.#fs.readdirSync(folder);
-	}
-}
-
 class Factions {
 	constructor() {
 		this.factionTable = {};
@@ -797,6 +224,89 @@ class Factions {
 
 		return false;
 	}
+}
+
+function checkIsNodeJs() {
+	return typeof process === "object";
+}
+
+const urlVar = {};
+location.search.slice(1).split("&").forEach((key_value) => {
+	const kv = key_value.split("=");
+	urlVar[kv[0]] = kv[1];
+});
+
+
+function isLive() {
+	
+	//Works for webworkers
+	if(urlVar['localStorage'] || urlVar['isLive']) {
+		return true;
+	}
+	
+	//Works for fronted
+	if(typeof game !== "undefined" && typeof game.urlVar === "function") {
+		if(game.urlVar('localStorage')) {
+			return true;
+		}
+	}
+	
+	if(isElectron()) {
+		return true;
+	}
+	if(isNw()) {
+		return true;
+	}
+	return false;
+}
+
+function isElectron() {
+	// Renderer process
+	if (typeof window !== "undefined" && typeof window.process === "object" && window.process.type === "renderer") {
+		return true;
+	}
+
+	// Main process
+	if (typeof process !== "undefined" && typeof process.versions === "object" && !!process.versions.electron) {
+		return true;
+	}
+
+	// Detect the user agent when the `nodeIntegration` option is set to true
+	if (
+		typeof navigator === "object" &&
+		typeof navigator.userAgent === "string" &&
+		navigator.userAgent.indexOf("Electron") >= 0
+	) {
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Checks if running in NW.js
+ * Works for Web Workers and Browser
+ * @returns {boolean} True if NW OR Nodejs false if anything else
+ */
+function isNw() {
+	//Catch for nodejs
+	if (!isElectron() && checkIsNodeJs()) {
+		return true;
+	}
+
+	try {
+		if (typeof self !== "undefined" && self.__nw_require) {
+			return true;
+		}
+		if (nw !== undefined) {
+			if (nw.Window !== undefined) {
+				return true;
+			}
+		}
+	} catch (e) {
+		return false;
+	}
+
+	return false;
 }
 
 const ABE = {};
@@ -3957,8 +3467,7 @@ class ServerItem {
 }
 
 class ServerWorld {
-	constructor(emit, fs) {
-		this.fs = fs;
+	constructor(emit) {
 		this.ts = new Date().getTime();
 		this.emit = emit; //function to push event from server
 		//console.log("World started");
@@ -4618,14 +4127,6 @@ class ServerWorld {
 
 	receiveDrawMatrix(options) {
 		this.drawMatrix = options.data.drawMatrix;
-	}
-
-	saveFile(data) {
-		let file = data.data.file;
-		let slot = data.data.slot;
-		data = data.data.data;
-		this.fs.setFolder(slot, true);
-		this.fs.writeFile(file, data);
 	}
 
 	sync(item, force) {
@@ -7026,382 +6527,6 @@ const Emitter$1 = function (data) {
 	}
 };
 
-/*
-
-Special consideration:
-
-Save files can be very big > 20mb
-
-*/
-
-class AbeFSLocalStorage {
-	constructor(root, readOnly, infoLogger, errorLogger) {
-		this.infoLogger = infoLogger || console.log;
-		this.errorLogger = errorLogger || console.error;
-		this.folder = this.root = root;
-		this.readOnly = readOnly;
-		this.httpRoot = "/ABE/";
-		this.ready = true;
-		this.folderCache = {}; //Remember about already created folders
-		this.keyCache = {}; //Remember about keys
-		this.initIndexedDB();
-		if (!this.ready) {
-			this.errorLogger("[ABE] Broken fs dependency");
-			return;
-		}
-
-		this.keyFile = "keys.json";
-
-		this.createRoot(root);
-		this.keyTimer = 0;
-		this.db = {};
-		this.localStorage = {
-			data: {}
-		};
-		this.localStorage.setItem = function(key, data){
-			this.data[key] = data;
-		};
-		this.localStorage.getItem = function(key){
-			return this.data[key] || false;
-		};
-	}
-
-	initIndexedDB() {
-		const request = indexedDB.open("deaddesert_bigfiles", 2);
-
-		request.onerror = (event) => {
-			console.error("IndexedDB Error", event);
-			this.errorLogger(event);
-		};
-
-		request.onupgradeneeded = (event) => {
-			const db = event.target.result;
-			db.createObjectStore("savefiles", {keyPath: "name"});
-		};
-		request.onsuccess = (event) => {
-			const db = event.target.result;
-			this.db = db;
-			return;
-		};
-	}
-
-	addKey(name) {
-		if (this.keyCache[name]) {
-			return; //We already know about this one
-		}
-		this.keyCache[name] = true;
-		if (this.keyTimer) {
-			clearTimeout(this.keyTimer);
-		}
-		//Reduce writing to file to avoid overwriting
-		this.keyTimer = setTimeout(() => {
-			this.writeFileSync(this.keyFile, this.keyCache);
-		}, 1000);
-	}
-
-	#getFilename(filename) {
-		filename = this.#stripFileExtension(filename) + ".json";
-		//Package is protected name
-		let protectedFile = "package.json";
-		if (filename.substr(-protectedFile.length) == protectedFile) {
-			throw "Cannot write file";
-		}
-		return filename;
-	}
-
-	#stripFileExtension(filename) {
-		const lastDotIndex = filename.lastIndexOf(".");
-		if (lastDotIndex === -1) {
-			return filename; // No file extension found
-		} else {
-			return filename.slice(0, lastDotIndex);
-		}
-	}
-
-	#makeKey(name) {
-		return this.#stripFileExtension(name);
-	}
-
-	exists(file, _ignoreCache) {
-		file = "_file_" + this.#makeKey(file);
-		return this.localStorage.getItem(file);
-	}
-
-	/**
-	 * Wraps IndexedDB transactions so they can be awaited
-	 * @param {*} transaction
-	 * @returns
-	 */
-	async awaitTransaction(transaction) {
-		return new Promise((resolve, reject) => {
-			transaction.onerror = (error) => {
-				reject(error);
-			};
-			transaction.onsuccess = (event) => {
-				resolve(event.target.result);
-			};
-		});
-	}
-
-	async fallbackIndexedDbWrite(name, data) {
-		const transaction = this.db.transaction(["savefiles"]);
-		const objectStore = transaction.objectStore("savefiles");
-		return this.awaitTransaction(objectStore.add({name, data}));
-	}
-
-	async fallbackIndexedDbRead(name) {
-		console.log("Fallback for", name);
-		const transaction = this.db.transaction(["savefiles"]);
-		const objectStore = transaction.objectStore("savefiles");
-		try {
-			const data = await this.awaitTransaction(objectStore.get(name));
-			console.log("Fallback for data", data);
-			if (!data || !data.data) return false;
-			return data.data;
-		} catch (e) {
-			console.error("Fallback error", e);
-			return false;
-		}
-	}
-
-	syncLocalWrite(url, data) {
-		const key = "_file_" + this.#makeKey(url);
-		if (!data) {
-			return false;
-		}
-		//Is setting
-		try {
-			if (typeof data !== "string") {
-				data = JSON.stringify(data);
-			}
-			this.localStorage.setItem(key, data);
-			return true;
-		} catch (e) {
-			this.fallbackIndexedDbWrite(key, data);
-		}
-	}
-
-	async syncLocalFetch(url) {
-		const key = "_file_" + this.#makeKey(url);
-
-		//Is getting
-		let data = this.localStorage.getItem(key);
-
-		if (data) {
-			try {
-				return JSON.parse(data);
-			} catch (e) {
-				return data;
-			}
-		}
-
-		if (!data || data.length === 0) {
-			data = await this.fallbackIndexedDbRead(key);
-
-			if (data) {
-				try {
-					return JSON.parse(data);
-				} catch (e) {
-					return data;
-				}
-			}
-
-			//No data in local storage or indexeddb make request
-			try {
-				console.log("Not in index do req", this.httpRoot + url);
-				return this.syncReq(this.httpRoot + url + "?ts=" + Date.now());
-			} catch (e) {
-				console.error("[ABE-ERROR] canny find", this.httpRoot + url);
-				return false; //No data even from request
-			}
-		}
-	}
-
-	syncReq(url) {
-		let request = new XMLHttpRequest();
-		request.open("GET", url, false); // `false` makes the request synchronous
-		request.send(null);
-		let result = {};
-		if (request.status === 200) {
-			if (request.responseText.substring(0, 1) == "{") {
-				try {
-					result = JSON.parse(request.responseText);
-				} catch (e) {
-					this.errorLogger("[ABE-ERROR] Failed to read AJAX result", url, request.responseText);
-					result = "";
-				}
-			} else {
-				result = request.responseText;
-			}
-		} else {
-			return "";
-		}
-		return result;
-	}
-
-	localFetch(url) {
-		console.log("Local fetch", url);
-		return new Promise((resolve, _reject) => {
-			resolve(this.syncLocalFetch(url));
-		});
-	}
-
-	localWrite(url, data) {
-		console.log("Local write", url);
-		return new Promise((resolve, _reject) => {
-			resolve(this.syncLocalWrite(url, data));
-		});
-	}
-
-	async writeFileSync(filename, data, callback) {
-		if (!callback) {
-			callback = this.defaultCallback;
-		}
-		if (this.readOnly) {
-			return callback({});
-		}
-		filename = this.#getFilename(filename);
-		try {
-			await this.localWrite(this.folder + "/" + filename, JSON.stringify(data)).then(callback);
-
-			this.addKey(filename);
-		} catch (e) {
-			this.errorLogger(data);
-		}
-	}
-
-	writeFile(filename, data, callback) {
-		if (!callback) {
-			callback = this.defaultCallback;
-		}
-		if (this.readOnly) {
-			return callback({});
-		}
-		console.log("write", filename);
-		filename = this.#getFilename(filename);
-		try {
-			this.localWrite(this.folder + "/" + filename, JSON.stringify(data)).then(callback);
-			this.addKey(filename);
-		} catch (e) {
-			console.error("Error", e);
-			this.errorLogger(data);
-			JSON.stringify(data);
-		}
-	}
-
-	writeFileRaw(filename, data, callback) {
-		if (!callback) {
-			callback = this.defaultCallback;
-		}
-		if (this.readOnly) {
-			return callback({});
-		}
-		filename = this.#getFilename(filename);
-		try {
-			this.localWrite(filename, JSON.stringify(data)).then(callback);
-			this.addKey(filename);
-		} catch (e) {
-			this.errorLogger(data);
-			JSON.stringify(data);
-		}
-	}
-
-	setFolder(folder, create) {
-		if (this.folder == this.root + "/" + folder) {
-			return; //Already this folder
-		}
-		if (create) {
-			this.createFolder(folder);
-		}
-
-		this.folder = this.root + "/" + folder;
-
-		if (this.exists(this.folder + "/" + this.keyFile, true)) {
-			this.keyCache = this.readFileSync(this.keyFile);
-		} else {
-			this.keyCache = {}; //No keeeeeyz
-		}
-	}
-
-	readFileRaw(filename, callback) {
-		if (!callback) {
-			callback = this.defaultCallback();
-		}
-		filename = this.#getFilename(filename);
-		this.localFetch(filename)
-			.then(function (res) {
-				return res.json();
-			})
-			.then(callback);
-	}
-
-	readFile(filename, callback) {
-		if (!callback) {
-			callback = this.defaultCallback();
-		}
-		filename = this.#getFilename(filename);
-		this.localFetch(this.folder + "/" + filename)
-			.then(function (res) {
-				return res.json();
-			})
-			.then(callback);
-	}
-
-	createRoot(_root) {
-		return true; //Not required
-	}
-
-	createFolder(_folder) {
-		return true;
-	}
-
-	keyExists(key) {
-		return false;
-	}
-/*
-	keyExists(key) {
-		const res = await this.syncLocalFetch(this.folder + "/" + key);
-		console.log("res", res);
-		if (res) {
-			return res;
-		}
-		console.log("synco")
-		return await this.syncLocalFetch(this.folder + "/" + key + ".json");
-	}
-*/
-	folderExists(_folder) {
-		return true;
-	}
-
-	defaultCallback() {}
-
-	save(key, value, callback) {
-		this.writeFile(key, value, callback);
-	}
-
-	saveSync(key, value, callback) {
-		this.writeFileSync(key, value, callback);
-	}
-
-	async readFileSync(filename) {
-		filename = this.#getFilename(filename);
-		return this.syncLocalFetch(this.folder + "/" + filename);
-	}
-
-	async loadSync(key) {
-		return await this.readFileSync(key);
-	}
-
-	load(key, callback) {
-		this.readFile(key, callback);
-	}
-
-	//Used for mods, clearly not used in browser
-	getFolder(_folder) {
-		return [];
-	}
-}
-
 if (!globalThis.self && !global.self) {
 	try {
 		global.self = global;
@@ -7427,19 +6552,6 @@ class GameServer {
 		this.server = "Not set";
 		this.ts = 0;
 		
-		if (isNw()) {
-			this.fs = new AbeFS("gamedata", false); //Per save file
-			this.globalfs = new AbeFS("gamedata", false); //Consistent everywhere
-		} else if (isLive() || isElectron()) {
-			this.fs = new AbeFSLocalStorage("gamedata", false); //Per save file
-			this.globalfs = new AbeFSLocalStorage("gamedata", false); //Consistent everywhere
-		} else {
-			this.fs = new AbeFSAjax("gamedata", false); //Per save file
-			this.globalfs = new AbeFSAjax("gamedata", false); //Consistent everywhere
-		}
-		this.fs.setFolder("current", true);
-		this.globalfs.setFolder("global", true);
-
 		this.factions = new Factions();
 
 		this.servers = servers$1;

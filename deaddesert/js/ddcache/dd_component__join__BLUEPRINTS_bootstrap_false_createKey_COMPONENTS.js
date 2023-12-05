@@ -109,6 +109,7 @@
       pane.addChild(ticker);
       let template = game.render.componentRaw('hud_button', {
         name: 'Save Game',
+        w: 210,
         corner: true
       });
       let x = 150;
@@ -120,7 +121,9 @@
       var btnType = 'hud_button';
       if (options.close) {
         var btn = game.render.componentRaw(btnType, {
-          name: 'Save Game'
+          name: 'Save Game',
+          w: 210,
+          corner: true
         });
         pane.addChild(btn);
         btn.x = x;
@@ -245,6 +248,7 @@
       if (options.close) {
         var btn = game.render.componentRaw(btnType, {
           name: 'Close Menu',
+          w: 210,
           corner: true
         });
         pane.addChild(btn);

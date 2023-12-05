@@ -1317,7 +1317,7 @@
           player.inventory.brain.addItem(new InventoryItem('ss_brain_clone_mk1'), true);
           player.inventory.body.addItem(new InventoryItem(bodies[game.rng(0, bodies.length - 1)]), true);
           player.inventory.mask.addItem(new InventoryItem(masks[game.rng(0, masks.length - 1)]), true);
-          player.inventory.weapon.addItemNow(new InventoryItem(weapons[game.rng(0, weapons.length - 1)]), true);
+          player.inventory.weapon.addItem(new InventoryItem(weapons[game.rng(0, weapons.length - 1)]), true);
         } catch (e) {}
         player.sync();
         game.lastp = player;
@@ -1419,7 +1419,7 @@
           if (game.rng(0, 2) == 1) {
             player.inventory.mask.addItem(new InventoryItem(masks[game.rng(0, masks.length - 1)]), true);
           }
-          player.inventory.weapon.addItemNow(new InventoryItem(weapons[game.rng(0, weapons.length - 1)]), true);
+          player.inventory.weapon.addItem(new InventoryItem(weapons[game.rng(0, weapons.length - 1)]), true);
         } catch (e) {}
         player.sync();
         game.lastp = player;
@@ -1531,7 +1531,7 @@
             disabled: true
           });
           player.inventory.mask.addItem(mask, true);
-          let brain = new InventoryItem('ss_brain_solver', {
+          let brain = new InventoryItem('ss_brain_clone_mk1', {
             disabled: true
           });
           player.inventory.brain.addItem(brain, true);
@@ -1825,7 +1825,7 @@
         try {
           game.index.getIndex('open_components')['frontMenu'].destroy();
         } catch (e) {}
-        player = new LifeObject(false, {
+        const player = new LifeObject(false, {
           isPlayer: true
         });
         player.x = spawner.x;

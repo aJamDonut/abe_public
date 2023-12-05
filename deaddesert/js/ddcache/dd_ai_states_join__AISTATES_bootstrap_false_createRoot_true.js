@@ -3248,13 +3248,12 @@
       if (target.data.dead) {
         return 0;
       }
-      if (life.dist(target) > 50 * 64) {
+      if (life.dist(target) > 20 * 64) {
         return 0;
       }
       if (!game.factions.enemies(life, target)) {
         return 0;
       }
-      if (target.threatCount() > 0 && game.rng(0, 2) === 1) return;
       let currentTarget = servers.world.index.find(life.data.targetId);
       if (!currentTarget || currentTarget.data.dead) {
         return life.setTarget(target);
@@ -3269,11 +3268,12 @@
       if (distDifference > DISTANCE_CHANGE && life.isHigherThreat(target)) {
         return life.setTarget(target);
       }
-      const pirahnas = false;
+      const pirahnas = game.rng(0, 1);
       if (pirahnas && target.data.stats.hp > currentTarget.data.stats.hp) {
         if (currentTarget.data.stats.hp < 50) {
           return 0;
         }
+        return life.setTarget(target);
       }
       return 0;
     },

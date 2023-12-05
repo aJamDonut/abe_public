@@ -2246,7 +2246,7 @@ bootStrap.push(function () {
   for (let i = 0; i < recipeNames.length; i++) {
     let recipe = recipes[recipeNames[i]];
     recipe.codename = recipeNames[i];
-    if (!recipe.researchRequire) {
+    if (!recipe.researchParent || recipe.researchParent.length === 0) {
       continue;
     }
     let parent = null;

@@ -290,6 +290,11 @@ bootStrap.push(function () {
             gotoId: item.id
           });
         };
+        if (item.baseClass === "BaseLife") {
+          if (item.data.dead || !item.data.isPlayer && !item.data.wildDrive) {
+            delete item.contextMenus['Drive'];
+          }
+        }
       }
     },
     "parent": 'entity_extension_items_client',

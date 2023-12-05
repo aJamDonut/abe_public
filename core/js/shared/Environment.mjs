@@ -60,9 +60,8 @@ function isElectron() {
  * @returns {boolean} True if NW OR Nodejs false if anything else
  */
 function isNw() {
-	
 	//Catch for nodejs
-	if (checkIsNodeJs()) {
+	if (!isElectron() && checkIsNodeJs()) {
 		return true;
 	}
 

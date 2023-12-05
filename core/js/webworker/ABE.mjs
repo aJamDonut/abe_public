@@ -1,4 +1,4 @@
-import {isLive, isNw} from "../shared/Environment.mjs";
+import {isLive} from "../shared/Environment.mjs";
 
 const ABE = {};
 

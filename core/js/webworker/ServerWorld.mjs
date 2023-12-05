@@ -5,8 +5,7 @@ import ServerLife from "./ServerLife.mjs";
 import ServerItem from "./ServerItem.mjs";
 
 class ServerWorld {
-	constructor(emit, fs) {
-		this.fs = fs;
+	constructor(emit) {
 		this.ts = new Date().getTime();
 		this.emit = emit; //function to push event from server
 		//console.log("World started");
@@ -692,14 +691,6 @@ class ServerWorld {
 
 	receiveDrawMatrix(options) {
 		this.drawMatrix = options.data.drawMatrix;
-	}
-
-	saveFile(data) {
-		let file = data.data.file;
-		let slot = data.data.slot;
-		data = data.data.data;
-		this.fs.setFolder(slot, true);
-		this.fs.writeFile(file, data);
 	}
 
 	sync(item, force) {
